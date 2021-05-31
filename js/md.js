@@ -24,7 +24,6 @@ function appendElement (container, lines) {
   var tagSplit = lines[0].trim().match(/(\S+)\s*(\S*)/),
       elInfo = getElInfo(tagSplit[1]),
       el = document.createElement(elInfo.tagName);
-  console.log(tagSplit);
   if (elInfo.id) el.id = elInfo.id;
   elInfo.classes.forEach((cls) => el.classList.add(cls));
   container.appendChild(el);
