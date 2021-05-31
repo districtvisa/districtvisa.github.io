@@ -21,8 +21,10 @@ function getElInfo (line) {
 }
 
 function appendElement (container, lines) {
-  var elInfo = getElInfo(lines[0]),
+  var tagSplit = lines[0].split(/ +/),
+      elInfo = getElInfo(tagSplit[0]),
       el = document.createElement(elInfo.tagName);
+  if (tagSplit[1]) lines.splice(0, 0, "    " + tagSplit[1]);
   if (elInfo.id) el.id = elInfo.id;
   elInfo.classes.forEach((cls) => el.classList.add(cls));
   container.appendChild(el);
