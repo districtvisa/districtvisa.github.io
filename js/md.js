@@ -3,6 +3,7 @@ function getElInfo (line) {
       m,
       out = {classes: [], attrs: []};
   while (line.length) {
+    console.log(line);
     m = line.match(re)[0];
     line = line.substring(m.length);
     if (m.startsWith("#")) {
@@ -10,8 +11,7 @@ function getElInfo (line) {
     } else if (m.startsWith(".")) {
       out.classes.push(m.substring(1));
     } else if (m.startsWith("[")) {
-      var split = m.split("=");
-      out.attrs.push[[split[0], split[1]]];
+      out.attrs.push[m.split("=")];
       line = line.substring(1);
     } else {
       out.tagName = m;
