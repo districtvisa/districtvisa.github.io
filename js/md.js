@@ -43,11 +43,15 @@ function appendElement (container, lines, leadingWS) {
   if (line.startsWith("=")) {
     lines[0] = line;
     setText(container, lines, ws);
+  } else if (line.startsWith("#")) {
+    
+  } else if (line.startsWith("-")) {
+    
   } else {
     lines.splice(0, 1);
-    while (lines[1] && lines[1].match(/^\s*[\.\[]/)) {
-      line = line.trimEnd() + lines[1].trimStart();
-      lines.splice(1, 1);
+    while (lines[0] && lines[0].match(/^\s*[\.\[]/)) {
+      line = line.trimEnd() + lines[0].trimStart();
+      lines.splice(0, 1);
     }
     var tagSplit = line.match(/(\S+)\s*(\S*)/),
         elInfo = getElInfo(tagSplit[1]),
