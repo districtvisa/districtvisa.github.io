@@ -5,8 +5,7 @@ function getElInfo (line) {
     if (line.startsWith("[")) {
       m = line.match(/[^\]]+\]/)[0];
       var split = m.slice(1, -1).split("=");
-      console.log(split);
-      out.attrs.push[split];
+      out.attrs.push(split);
     } else {
       m = line.match(/[#\.]?[^#\.\[]+/)[0];
       if (m.startsWith("#")) {
@@ -28,8 +27,8 @@ function appendElement (container, lines, leadingWS) {
       el = document.createElement(elInfo.tagName);
   if (elInfo.id) el.id = elInfo.id;
   elInfo.classes.forEach((cls) => el.classList.add(cls));
-  container.appendChild(el);
   elInfo.attrs.forEach((kv) => el.setAttribute(kv[0], kv[1]));
+  container.appendChild(el);
   console.log(el);
   lines.splice(0, 1);
   if (tagSplit[2]) lines.splice(0, 0, "    " + tagSplit[2]);
