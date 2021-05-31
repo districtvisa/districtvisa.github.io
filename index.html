@@ -12,7 +12,7 @@
   <script>
     var md_content = document.getElementById("md-content");
     md_content.remove();
-    document.getElementById('content').innerHTML = marked(md_content.innerText);
+    document.getElementById('content').innerHTML = marked(md_content.innerText.trim());
   </script>
 </body>
 </html>
