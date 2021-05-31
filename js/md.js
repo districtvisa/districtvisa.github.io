@@ -5,6 +5,7 @@ function getElInfo (line) {
     if (line.startsWith("[")) {
       m = line.match(/[^\]]+\]/)[0];
       var split = m.slice(1, -1).split("=");
+      console.log(split);
       out.attrs.push[split];
     } else {
       m = line.match(/[#\.]?[^#\.\[]+/)[0];
