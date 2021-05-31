@@ -28,8 +28,8 @@ function appendElement (container, lines, leadingWS) {
       el = document.createElement(elInfo.tagName);
   if (elInfo.id) el.id = elInfo.id;
   elInfo.classes.forEach((cls) => el.classList.add(cls));
-  elInfo.attrs.forEach((kv) => { console.log(kv); el[kv[0]] = kv[1] });
   container.appendChild(el);
+  elInfo.attrs.forEach((kv) => el.setAttribute(kv[0], kv[1]));
   lines.splice(0, 1);
   if (tagSplit[2]) lines.splice(0, 0, "    " + tagSplit[2]);
   while (lines.length) {
