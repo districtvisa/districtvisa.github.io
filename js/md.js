@@ -29,6 +29,7 @@ function appendElement (container, lines) {
   container.appendChild(el);
   lines.splice(0, 1);
   if (tagSplit[2]) lines.splice(0, 0, "    " + tagSplit[2]);
+  console.log(lines);
   while (lines.length && lines[0].startsWith("  ")) {
     if (lines[0].startsWith("    ")) {
       el.innerText += lines[0].trimStart();
