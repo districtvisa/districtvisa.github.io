@@ -22,7 +22,7 @@ function getElInfo (line) {
 }
 
 function setText (container, lines, leadingWS) {
-  var text = lines[0].match(/= *(.+)/)[1];
+  var text = lines[0].substring(1).trimStart();
   container.innerText += text;
   lines.splice(0, 1);
   while (lines.length) {
@@ -37,16 +37,18 @@ function setText (container, lines, leadingWS) {
 }
 
 function appendElement (container, lines, leadingWS) {
-  while (lines[1] && lines[1].match(/^\s*[\.\[]/)) {
-    lines[0] = lines[0].trimEnd() + lines[1].trimStart();
-    lines.splice(1, 1);
-  }
   var line = lines[0].trimStart(),
       ws = lines[0].length - line.length;
-  lines[0] = line;
+  if (ws <= leadingWS) return false;
   if (line.startsWith("=")) {
+    lines[0] = line;
     setText(container, lines, ws);
   } else {
+    lines.splice(0, 1);
+    while (lines[1] && lines[1].match(/^\s*[\.\[]/)) {
+      line = line.trimEnd() + lines[1].trimStart();
+      lines.splice(1, 1);
+    }
     var tagSplit = line.match(/(\S+)\s*(\S*)/),
         elInfo = getElInfo(tagSplit[1]),
         el = document.createElement(elInfo.tagName);
@@ -54,17 +56,13 @@ function appendElement (container, lines, leadingWS) {
     elInfo.classes.forEach((cls) => el.classList.add(cls));
     elInfo.attrs.forEach((kv) => el.setAttribute(kv[0], kv[1]));
     container.appendChild(el);
-    lines.splice(0, 1);
     if (tagSplit[2]) el.innerText += tagSplit[2];
     while (lines.length) {
       ws = lines[0].length - lines[0].trimStart().length;
-      if (ws > leadingWS) {
-        appendElement(el, lines, ws);
-      } else {
-        break;
-      }
+      if (!appendElement(el, lines, ws)) break;
     }
   }
+  return true;
 }
 
 function parse (container, md) {
