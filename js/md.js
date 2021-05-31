@@ -23,6 +23,7 @@ function getElInfo (line) {
 function appendElement (container, lines, leadingWS) {
   var tagSplit = lines[0].trim().match(/(\S+)\s*(\S*)/),
       elInfo = getElInfo(tagSplit[1]),
+      _ = console.log(elInfo),
       el = document.createElement(elInfo.tagName);
   if (elInfo.id) el.id = elInfo.id;
   elInfo.classes.forEach((cls) => el.classList.add(cls));
