@@ -22,6 +22,10 @@ function getElInfo (line) {
 }
 
 function appendElement (container, lines, leadingWS) {
+  while (lines.length && lines[1].match(/^\s*[#\.\[]/)) {
+    lines[0] = lines[0].trimEnd() + lines[1].trim();
+    lines.splice(1, 1);
+  }
   var tagSplit = lines[0].trim().match(/(\S+)\s*(\S*)/),
       elInfo = getElInfo(tagSplit[1]),
       el = document.createElement(elInfo.tagName);
@@ -29,7 +33,6 @@ function appendElement (container, lines, leadingWS) {
   elInfo.classes.forEach((cls) => el.classList.add(cls));
   elInfo.attrs.forEach((kv) => el.setAttribute(kv[0], kv[1]));
   container.appendChild(el);
-  console.log(el);
   lines.splice(0, 1);
   if (tagSplit[2]) lines.splice(0, 0, "    " + tagSplit[2]);
   while (lines.length) {
