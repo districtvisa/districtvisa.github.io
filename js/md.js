@@ -27,7 +27,8 @@ function setText (container, lines, leadingWS) {
   lines.splice(0, 1);
   while (lines.length) {
     var line = lines[0].trimStart();
-    if (lines[0].length - line.length - leadingWS) {
+    console.log(lines[0], line);
+    if (lines[0].length - line.length > leadingWS) {
       container.innerText += line;
       lines.splice(0, 1);
     } else {
@@ -44,10 +45,10 @@ function appendElement (container, lines, leadingWS) {
   var line = lines[0].trimStart(),
       ws = lines[0].length - line.length;
   lines[0] = line;
-  if (lines[0].startsWith("=")) {
+  if (line.startsWith("=")) {
     setText(container, lines, ws);
   } else {
-    var tagSplit = lines[0].match(/(\S+)\s*(\S*)/),
+    var tagSplit = line.match(/(\S+)\s*(\S*)/),
         elInfo = getElInfo(tagSplit[1]),
         el = document.createElement(elInfo.tagName);
     if (elInfo.id) el.id = elInfo.id;
