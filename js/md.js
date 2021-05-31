@@ -83,4 +83,7 @@ function parse (container, md) {
   while (lines.length) {
     parseElement(container, lines, ws - 1);
   }
+  if (container.style.display == "none") {
+    container.style.display = "";
+  }
 }
