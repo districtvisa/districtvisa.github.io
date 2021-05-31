@@ -3,7 +3,7 @@ function getElInfo (line) {
   while (line.length) {
     var m;
     if (line.startsWith("[")) {
-      m = line.match(/[^\]]/)[0];
+      m = line.match(/[^\]]+/)[0];
       out.attrs.push[m.split("=")];
     } else {
       m = line.match(/[#\.]?[^#\.\[]+/)[0];
