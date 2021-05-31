@@ -26,18 +26,17 @@ function appendElement (container, lines) {
   if (elInfo.id) el.id = elInfo.id;
   elInfo.classes.forEach((cls) => el.classList.add(cls));
   container.appendChild(el);
-  lines = lines.slice(1);
+  lines.splice(0, 1);
   while (lines[0].startsWith("    ")) {
     el.innerText += lines[0].trimStart();
-    lines = lines.slice(1);
+    lines.splice(0, 1);
   }
-  return lines;
 }
 
 function parse (container, md) {
   var leadingWS = md.match(/^ */)[0],
       lines = md.trim().split("\n" + leadingWS);
   while (lines.length) {
-    lines = appendElement(container, lines);
+    appendElement(container, lines);
   }
 }
