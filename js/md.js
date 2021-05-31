@@ -37,12 +37,32 @@ function setText (container, lines, leadingWS) {
 }
 
 function appendElement (container, lines, leadingWS) {
+  var line = lines[0];
+  lines.splice(0, 1);
+  while (lines.length && lines[0].match(/^\s*[\.\[]/)) {
+    line = line.trimEnd() + lines[0].trimStart();
+    lines.splice(0, 1);
+  }
+  var tagSplit = line.match(/(\S+)\s*(\S*)/),
+      elInfo = getElInfo(tagSplit[1]),
+      el = document.createElement(elInfo.tagName);
+    if (elInfo.id) el.id = elInfo.id;
+    elInfo.classes.forEach((cls) => el.classList.add(cls));
+    elInfo.attrs.forEach((kv) => el.setAttribute(kv[0], kv[1]));
+    container.appendChild(el);
+    if (tagSplit[2]) el.innerText = tagSplit[2];
+    while (lines.length) {
+      if (!parseElement(el, lines, leadingWS)) break;
+    }  
+}
+
+function parseElement (container, lines, leadingWS) {
   var line = lines[0].trimStart(),
       ws = lines[0].length - line.length;
   console.log(line, ws, leadingWS);
   if (ws <= leadingWS) return false;
+  lines[0] = line;
   if (line.startsWith("=")) {
-    lines[0] = line;
     setText(container, lines, ws);
   } else if (line.startsWith("#")) {
     
@@ -51,22 +71,7 @@ function appendElement (container, lines, leadingWS) {
     // table
     // quick link <url>
   } else {
-    lines.splice(0, 1);
-    while (lines[0] && lines[0].match(/^\s*[\.\[]/)) {
-      line = line.trimEnd() + lines[0].trimStart();
-      lines.splice(0, 1);
-    }
-    var tagSplit = line.match(/(\S+)\s*(\S*)/),
-        elInfo = getElInfo(tagSplit[1]),
-        el = document.createElement(elInfo.tagName);
-    if (elInfo.id) el.id = elInfo.id;
-    elInfo.classes.forEach((cls) => el.classList.add(cls));
-    elInfo.attrs.forEach((kv) => el.setAttribute(kv[0], kv[1]));
-    container.appendChild(el);
-    if (tagSplit[2]) el.innerText += tagSplit[2];
-    while (lines.length) {
-      if (!appendElement(el, lines, ws)) break;
-    }
+    appendElement(container, lines, ws);
   }
   return true;
 }
@@ -75,6 +80,6 @@ function parse (container, md) {
   var leadingWS = md.match(/^\n*( *)/)[1],
       lines = md.trim().split(/\n+/);
   while (lines.length) {
-    appendElement(container, lines, leadingWS.length);
+    parseElement(container, lines, leadingWS.length);
   }
 }
