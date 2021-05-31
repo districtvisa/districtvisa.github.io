@@ -30,6 +30,7 @@ function appendElement (container, lines, leadingWS) {
   elInfo.classes.forEach((cls) => el.classList.add(cls));
   container.appendChild(el);
   elInfo.attrs.forEach((kv) => el.setAttribute(kv[0], kv[1]));
+  console.log(el);
   lines.splice(0, 1);
   if (tagSplit[2]) lines.splice(0, 0, "    " + tagSplit[2]);
   while (lines.length) {
