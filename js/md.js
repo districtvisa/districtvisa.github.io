@@ -11,7 +11,7 @@ function getElInfo (line) {
       out.classes.push(m.substring(1));
     } else if (m.startsWith("[")) {
       var split = m.split("=");
-      out.attributes.push[[split[0], split[1]]];
+      out.attrs.push[[split[0], split[1]]];
       line = line.substring(1);
     } else {
       out.tagName = m;
