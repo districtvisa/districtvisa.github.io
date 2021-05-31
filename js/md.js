@@ -28,7 +28,7 @@ function appendElement (container, lines) {
   container.appendChild(el);
   lines = lines.slice(1);
   while (lines[0].startsWith("    ")) {
-    el.innerText += lines[0].trim();
+    el.innerText += lines[0].trimStart();
     lines = lines.slice(1);
   }
   return lines;
@@ -36,7 +36,7 @@ function appendElement (container, lines) {
 
 function parse (container, md) {
   var leadingWS = md.match(/^ */)[0],
-      lines = md.trimStart().split("\n" + leadingWS);
+      lines = md.trim().split("\n" + leadingWS);
   while (lines.length) {
     lines = appendElement(container, lines);
   }
