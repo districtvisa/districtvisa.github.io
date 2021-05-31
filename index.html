@@ -10,8 +10,14 @@
 <body>
   <div id="content"></div>
   <div id="md-content" style="display:none">
-    div.container
-      h1 Hello World!
+    div.container.col-xxl-8.px-4.py-5
+      div.row.flex-lg-row-reverse.align-items-center.g-5.py-5
+        div.col-10.col-sm-8.col-lg-6
+        div.col-lg-6
+          h1.display-5.fw-bold.lh-1.mb-3
+              Heading
+          p.lead
+              Text text text
   </div>
   <script src="js/md.js"></script>
   <script>parse(document.getElementById("content"), document.getElementById("md-content").innerHTML)</script>
