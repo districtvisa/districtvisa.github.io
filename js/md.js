@@ -1,21 +1,23 @@
 function getElInfo (line) {
-  var re = /[#\.\[]?[^#\.\]\[]+/,
+  var re = /[#\.\[]?[^#\.\[]+/,
       m,
       out = {classes: [], attrs: []};
   while (line.length) {
-    console.log(line);
-    m = line.match(re)[0];
-    line = line.substring(m.length);
-    if (m.startsWith("#")) {
-      out.id = m.substring(1);
-    } else if (m.startsWith(".")) {
-      out.classes.push(m.substring(1));
-    } else if (m.startsWith("[")) {
+    var m;
+    if (m.startsWith("[")) {
+      m = line.match(/[^\]]/)[0];
       out.attrs.push[m.split("=")];
-      line = line.substring(1);
     } else {
+      m = line.match(re)[0];
+      if (m.startsWith("#")) {
+        out.id = m.substring(1);
+      } else if (m.startsWith(".")) {
+        out.classes.push(m.substring(1));
+      } else {
       out.tagName = m;
+      }
     }
+    line = line.substring(m.length);
   }
   return out;
 }
