@@ -1,7 +1,7 @@
 function getElInfo (line) {
   var re = /[#\.\[]?[^#\.\]\[]+/,
       m,
-      out = {classes: [], attrs: {}};
+      out = {classes: [], attrs: []};
   while (line.length) {
     m = line.match(re)[0];
     line = line.substring(m.length);
@@ -11,8 +11,8 @@ function getElInfo (line) {
       out.classes.push(m.substring(1));
     } else if (m.startsWith("[")) {
       var split = m.split("=");
+      out.attributes.push[[split[0], split[1]]];
       line = line.substring(1);
-      out.attributes[split[0]] = split[1];
     } else {
       out.tagName = m;
     }
@@ -26,6 +26,7 @@ function appendElement (container, lines, leadingWS) {
       el = document.createElement(elInfo.tagName);
   if (elInfo.id) el.id = elInfo.id;
   elInfo.classes.forEach((cls) => el.classList.add(cls));
+  elInfo.attrs.forEach((kv) => el.setAttribute(kv[0], kv[1]));
   container.appendChild(el);
   lines.splice(0, 1);
   if (tagSplit[2]) lines.splice(0, 0, "    " + tagSplit[2]);
