@@ -20,7 +20,7 @@ function getElInfo (line) {
   return out;
 }
 
-function appendElement (container, lines) {
+function appendElement (container, lines, leadingWS) {
   var tagSplit = lines[0].trim().match(/(\S+)\s*(\S*)/),
       elInfo = getElInfo(tagSplit[1]),
       el = document.createElement(elInfo.tagName);
@@ -29,21 +29,23 @@ function appendElement (container, lines) {
   container.appendChild(el);
   lines.splice(0, 1);
   if (tagSplit[2]) lines.splice(0, 0, "    " + tagSplit[2]);
-  console.log(lines);
-  while (lines.length && lines[0].startsWith("  ")) {
-    if (lines[0].startsWith("    ")) {
+  while (lines.length) {
+    var ws = lines[0].length - lines[0].trim().length - leadingWS;
+    if (ws == 4) {
       el.innerText += lines[0].trimStart();
       lines.splice(0, 1);
+    } else if (ws == 2) {
+      appendElement(el, lines, leadingWS + "  ");
     } else {
-      appendElement(el, lines);
+      break;
     }
   }
 }
 
 function parse (container, md) {
   var leadingWS = md.match(/^\n*( *)/)[1],
-      lines = md.trim().split("\n" + leadingWS);
+      lines = md.trim().split(/\n+/);
   while (lines.length) {
-    appendElement(container, lines);
+    appendElement(container, lines, leadingWS.length);
   }
 }
