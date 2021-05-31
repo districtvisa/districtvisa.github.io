@@ -39,6 +39,7 @@ function setText (container, lines, leadingWS) {
 function appendElement (container, lines, leadingWS) {
   var line = lines[0].trimStart(),
       ws = lines[0].length - line.length;
+  console.log(line, ws, leadingWS);
   if (ws <= leadingWS) return false;
   if (line.startsWith("=")) {
     lines[0] = line;
@@ -47,6 +48,8 @@ function appendElement (container, lines, leadingWS) {
     
   } else if (line.startsWith("-")) {
     
+    // table
+    // quick link <url>
   } else {
     lines.splice(0, 1);
     while (lines[0] && lines[0].match(/^\s*[\.\[]/)) {
@@ -62,7 +65,6 @@ function appendElement (container, lines, leadingWS) {
     container.appendChild(el);
     if (tagSplit[2]) el.innerText += tagSplit[2];
     while (lines.length) {
-      ws = lines[0].length - lines[0].trimStart().length;
       if (!appendElement(el, lines, ws)) break;
     }
   }
