@@ -59,7 +59,6 @@ function appendElement (container, lines, leadingWS) {
 function parseElement (container, lines, leadingWS) {
   var line = lines[0].trimStart(),
       ws = lines[0].length - line.length;
-  console.log(line, ws, leadingWS);
   if (ws <= leadingWS) return false;
   lines[0] = line;
   if (line.startsWith("=")) {
