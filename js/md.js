@@ -76,7 +76,10 @@ function parseElement (container, lines, leadingWS) {
 }
 
 function parse (container, md) {
-  if (!md) md = container.innerHTML;
+  if (!md) {
+    md = container.innerHTML;
+    md.innerHTML = "";
+  }
   var lines = md.trimEnd().split(/\n+/);
   while (lines[0].trimStart() === "") lines.splice(0, 1);
   var ws = lines[0].length - lines[0].trimStart().length;
@@ -84,6 +87,6 @@ function parse (container, md) {
     parseElement(container, lines, ws - 1);
   }
   if (container.style.display == "none") {
-    container.style.display = "";
+    container.style.display = "block";
   }
 }
