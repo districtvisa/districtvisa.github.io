@@ -27,7 +27,6 @@ function setText (container, lines, leadingWS) {
   lines.splice(0, 1);
   while (lines.length) {
     var line = lines[0].trimStart();
-    console.log(lines[0], line);
     if (lines[0].length - line.length > leadingWS) {
       container.innerText += line;
       lines.splice(0, 1);
