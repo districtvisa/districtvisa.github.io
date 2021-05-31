@@ -35,7 +35,7 @@ function appendElement (container, lines, leadingWS) {
       el.innerText += lines[0].trimStart();
       lines.splice(0, 1);
     } else if (ws == 2) {
-      appendElement(el, lines, leadingWS + "  ");
+      appendElement(el, lines, leadingWS + 2);
     } else {
       break;
     }
