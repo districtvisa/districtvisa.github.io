@@ -1,6 +1,5 @@
 function getElInfo (line) {
   var re = /[#\.\[]?[^#\.\[]+/,
-      m,
       out = {classes: [], attrs: []};
   while (line.length) {
     var m;
