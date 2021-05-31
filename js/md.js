@@ -40,10 +40,10 @@ function appendElement (container, lines) {
 }
 
 function parse (container, md) {
-  var leadingWS = md.match(/^ */)[0],
-      lines = md.trim().split("\n" + leadingWS);
+  var leadingWS = md.match(/^ */),
+      lines = md.trim().split("\n" + leadingWS[0]);
   console.log(md.trim());
-  console.log("\n" + leadingWS);
+  console.log(leadingWS);
   while (lines.length) {
     appendElement(container, lines);
   }
