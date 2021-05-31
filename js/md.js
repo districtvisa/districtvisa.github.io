@@ -23,7 +23,9 @@ function getElInfo (line) {
 function appendElement (container, lines) {
   var elInfo = getElInfo(lines[0]),
       element = document.createElement(elInfo.tagName);
+  
   container.appendChild(element);
+  return lines.slice(1);
 }
 
 function parse (container, md) {
