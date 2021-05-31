@@ -22,10 +22,16 @@ function getElInfo (line) {
 
 function appendElement (container, lines) {
   var elInfo = getElInfo(lines[0]),
-      element = document.createElement(elInfo.tagName);
-  
-  container.appendChild(element);
-  return lines.slice(1);
+      el = document.createElement(elInfo.tagName);
+  if (elInfo.id) el.id = elInfo.id;
+  elInfo.classes.forEach((cls) => el.classList.add(cls));
+  container.appendChild(el);
+  lines = lines.slice(1);
+  while (lines[0].startsWith("    ")) {
+    el.innerText += lines[0].trim();
+    lines = lines.slice(1);
+  }
+  return lines;
 }
 
 function parse (container, md) {
