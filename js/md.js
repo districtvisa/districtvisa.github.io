@@ -28,9 +28,13 @@ function appendElement (container, lines) {
   container.appendChild(el);
   lines.splice(0, 1);
   if (!lines.length) return;
-  while (lines[0].startsWith("    ")) {
-    el.innerText += lines[0].trimStart();
-    lines.splice(0, 1);
+  while (lines[0].startsWith("  ")) {
+    if (lines[0].startsWith("    ")) {
+      el.innerText += lines[0].trimStart();
+      lines.splice(0, 1);
+    } else {
+      appendElement(el, lines);
+    }
   }
 }
 
