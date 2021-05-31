@@ -77,7 +77,8 @@ function parseElement (container, lines, leadingWS) {
 }
 
 function parse (container, md) {
-  var leadingWS = md.match(/^\n*( *)/)[1],
+  md = md.match(/^\n*(.+)/)[1];
+  var leadingWS = md.match(/^\s*/)[0],
       lines = (" " + md).split(/\n+/);
   while (lines.length) {
     parseElement(container, lines, leadingWS.length);
