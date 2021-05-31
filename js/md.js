@@ -21,29 +21,48 @@ function getElInfo (line) {
   return out;
 }
 
-function appendElement (container, lines, leadingWS) {
-  while (lines.length && lines[1].match(/^\s*[#\.\[]/)) {
-    lines[0] = lines[0].trimEnd() + lines[1].trim();
-    lines.splice(1, 1);
-  }
-  var tagSplit = lines[0].trim().match(/(\S+)\s*(\S*)/),
-      elInfo = getElInfo(tagSplit[1]),
-      el = document.createElement(elInfo.tagName);
-  if (elInfo.id) el.id = elInfo.id;
-  elInfo.classes.forEach((cls) => el.classList.add(cls));
-  elInfo.attrs.forEach((kv) => el.setAttribute(kv[0], kv[1]));
-  container.appendChild(el);
+function setText (container, lines, leadingWS) {
+  var text = lines[0].match(/= *(.+)/)[1];
+  container.innerText += text;
   lines.splice(0, 1);
-  if (tagSplit[2]) lines.splice(0, 0, "    " + tagSplit[2]);
   while (lines.length) {
-    var ws = lines[0].length - lines[0].trim().length - leadingWS;
-    if (ws == 4) {
-      el.innerText += lines[0].trimStart();
+    var line = lines[0].trimStart();
+    if (lines[0].length - line.length - leadingWS) {
+      container.innerText += line;
       lines.splice(0, 1);
-    } else if (ws == 2) {
-      appendElement(el, lines, leadingWS + 2);
     } else {
       break;
+    }
+  }
+}
+
+function appendElement (container, lines, leadingWS) {
+  while (lines[1] && lines[1].match(/^\s*[\.\[]/)) {
+    lines[0] = lines[0].trimEnd() + lines[1].trimStart();
+    lines.splice(1, 1);
+  }
+  var line = lines[0].trimStart(),
+      ws = lines[0].length - line.length;
+  lines[0] = line;
+  if (lines[0].startsWith("=")) {
+    setText(container, lines, ws);
+  } else {
+    var tagSplit = lines[0].match(/(\S+)\s*(\S*)/),
+        elInfo = getElInfo(tagSplit[1]),
+        el = document.createElement(elInfo.tagName);
+    if (elInfo.id) el.id = elInfo.id;
+    elInfo.classes.forEach((cls) => el.classList.add(cls));
+    elInfo.attrs.forEach((kv) => el.setAttribute(kv[0], kv[1]));
+    container.appendChild(el);
+    lines.splice(0, 1);
+    if (tagSplit[2]) el.innerText += tagSplit[2];
+    while (lines.length) {
+      ws = lines[0].length - lines[0].trimStart().length;
+      if (ws > leadingWS) {
+        appendElement(el, lines, ws);
+      } else {
+        break;
+      }
     }
   }
 }
