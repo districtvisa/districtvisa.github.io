@@ -30,7 +30,6 @@ function appendElement (container, lines) {
   lines.splice(0, 1);
   if (tagSplit[1]) lines.splice(0, 0, "    " + tagSplit[1]);
   while (lines.length && lines[0].startsWith("  ")) {
-    console.log(lines[0]);
     if (lines[0].startsWith("    ")) {
       el.innerText += lines[0].trimStart();
       lines.splice(0, 1);
@@ -43,6 +42,7 @@ function appendElement (container, lines) {
 function parse (container, md) {
   var leadingWS = md.match(/^ */)[0],
       lines = md.trim().split("\n" + leadingWS);
+  console.log(lines);
   while (lines.length) {
     appendElement(container, lines);
   }
