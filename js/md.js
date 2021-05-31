@@ -27,6 +27,7 @@ function appendElement (container, lines) {
   elInfo.classes.forEach((cls) => el.classList.add(cls));
   container.appendChild(el);
   lines.splice(0, 1);
+  console.log(lines);
   if (!lines.length) return;
   while (lines[0].startsWith("  ")) {
     if (lines[0].startsWith("    ")) {
