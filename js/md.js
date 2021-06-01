@@ -43,17 +43,17 @@ function appendElement (container, lines, leadingWS) {
     line = line.trimEnd() + lines[0].trimStart();
     lines.splice(0, 1);
   }
-  var tagSplit = line.match(/(\S+)\s*(\S*)/),
+  var tagSplit = line.match(/(\S+)\s*(.*)/),
       elInfo = getElInfo(tagSplit[1]),
       el = document.createElement(elInfo.tagName);
-    if (elInfo.id) el.id = elInfo.id;
-    elInfo.classes.forEach((cls) => el.classList.add(cls));
-    elInfo.attrs.forEach((kv) => el.setAttribute(kv[0], kv[1]));
-    container.appendChild(el);
-    if (tagSplit[2]) el.innerText = tagSplit[2];
-    while (lines.length) {
-      if (!parseElement(el, lines, leadingWS)) break;
-    }  
+  if (elInfo.id) el.id = elInfo.id;
+  elInfo.classes.forEach((cls) => el.classList.add(cls));
+  elInfo.attrs.forEach((kv) => el.setAttribute(kv[0], kv[1]));
+  container.appendChild(el);
+  if (tagSplit[2]) el.innerText = tagSplit[2];
+  while (lines.length) {
+    if (!parseElement(el, lines, leadingWS)) break;
+  }  
 }
 
 function parseElement (container, lines, leadingWS) {
@@ -87,6 +87,6 @@ function parse (container, md) {
     parseElement(container, lines, ws - 1);
   }
   if (container.style.display == "none") {
-    container.style.display = "block";
+    container.style.display = "";
   }
 }

@@ -1,0 +1,134 @@
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Sogoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  color: #555555;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.hero {
+  display: flex;
+  padding: 0;
+}
+
+.hero > div {
+  margin: 0;
+}
+
+.hero > :first-child {
+  width: 30%;
+  padding: 0 1.5rem;
+  font-size: 2rem;
+}
+
+.hero > :first-child > h1 {
+  font-size: 4rem;
+  margin: 1rem 0;
+}
+
+.hero > :last-child {
+  width: 70%;
+}
+
+.img-block {
+  width: 100%;
+  height 100%;
+  display: block;
+}
+
+.bg-blue {
+  background: linear-gradient(to bottom right, #000000, #0000ff);
+  color: white;
+}
+
+.bg-green {
+  background: linear-gradient(to bottom right, #003000, #00ca00);
+  color: white;
+}
+
+.action-items {
+  display: flex;
+}
+
+.action-items > div {
+  border: 1px solid #555555;
+  border-left: 0;
+  flex-grow: 1;
+  padding: 1rem;
+  text-align: center;
+}
+
+.action-items > :last-child {
+  border-right: 0;
+}
+
+.action-items > div:hover {
+  background-color: #cccccc;
+  cursor: pointer;
+}
+
+.footer {
+  flex-grow: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 1rem 0;
+}
+
+.title-bar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.title-bar-dark {
+  background-color: #343a40;
+  color: white;
+}
+
+.title-bar-light {
+  background-color: #ffffffbb;
+}
+
+.cursive {
+  font-family: cursive;
+}
+
+.brand {
+  font-size: 2rem;
+  font-family: cursive;
+  padding: 1rem;
+}
+
+.cover-img {
+  width: 100vw;
+  max-height: 75vh;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+}
+
+.cover-img > img {
+  display: block;
+  width: 100%;
+}
+
+.tagline {
+  padding: 1rem 0;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.tagline-frame {
+  border-bottom: 1px solid #555555;
+  height: 0;
+  margin: 0 1rem;
+  flex-grow: 1;
+}
+
