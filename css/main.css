@@ -10,64 +10,42 @@ body {
   min-height: 100vh;
 }
 
-.hero {
-  display: flex;
-  padding: 0;
-}
-
-.hero > div {
-  margin: 0;
-}
-
-.hero > :first-child {
-  width: 30%;
-  padding: 0 1.5rem;
-  font-size: 2rem;
-}
-
-.hero > :first-child > h1 {
-  font-size: 4rem;
-  margin: 1rem 0;
-}
-
-.hero > :last-child {
-  width: 70%;
-}
-
 .img-block {
   width: 100%;
   height 100%;
   display: block;
 }
 
-.bg-blue {
-  background: linear-gradient(to bottom right, #000000, #0000ff);
-  color: white;
-}
-
-.bg-green {
-  background: linear-gradient(to bottom right, #003000, #00ca00);
-  color: white;
-}
-
-.action-items {
+.action-tiles {
   display: flex;
+  justify-content: center;
 }
 
-.action-items > div {
+.action-tiles > div {
+  max-width: 960px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.action-tiles a {
   border: 1px solid #555555;
-  border-left: 0;
-  flex-grow: 1;
+  width: 200px;
+  height: 200px;
+  margin: 20px;
+  box-sizing: border-box;
   padding: 1rem;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  font-size: 1.5rem;
+  text-decoration: none;
+  color: inherit;
 }
 
-.action-items > :last-child {
-  border-right: 0;
-}
-
-.action-items > div:hover {
-  background-color: #cccccc;
+.action-tiles a:hover {
+  background-color: #eeeeeeee;
   cursor: pointer;
 }
 
@@ -80,9 +58,20 @@ body {
 }
 
 .title-bar {
-  position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 1;
+  width: 100vw;
+}
+
+.title-bar-fixed {
+  background-color: #ffffffbb;
+  position: fixed;
+}
+
+.title-bar-sticky {
+  position: sticky;
+  background-color: #212529;
+  color: #ffffff;
 }
 
 .title-bar-dark {
@@ -90,18 +79,16 @@ body {
   color: white;
 }
 
-.title-bar-light {
-  background-color: #ffffffbb;
-}
-
 .cursive {
-  font-family: cursive;
+  font-family: "Apple Chancery", "Lucida Calligraphy", cursive;
 }
 
 .brand {
   font-size: 2rem;
-  font-family: cursive;
   padding: 1rem;
+  display: block;
+  text-decoration: none;
+  color: inherit;
 }
 
 .cover-img {
