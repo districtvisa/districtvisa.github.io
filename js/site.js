@@ -1,27 +1,46 @@
-function create_element
-({
-  parent,
-  tag_name,
-  class_name,
-  attrs,
-  content
-})
-{
+function content_type_email (parent, {content}) {
+  create_element({
+    parent: parent,
+    tag_name: "a",
+    attrs: {href: "mailto:" + content},
+    content: content
+  });
+}
+
+let content_types = {
+  email: content_type_email
+};
+
+function create_element (config) {
+  let {
+        parent,
+        tag_name,
+        class_name,
+        id,
+        attrs,
+        content,
+        content_type
+      } = config;
   tag_name = tag_name || "div";
   let el = document.createElement(tag_name);
   if (class_name) el.className = class_name;
-  if (content) el.innerHTML = content;
+  if (id) el.id = id;
   if (attrs) {
     Object.getOwnPropertyNames(attrs).forEach(function (prop) {
       el.setAttribute(prop, attrs[prop]);
     });
+  }
+  if (content_type) {
+    content_types[content_type](el, config);
+  } else if (content) {
+    el.innerHTML = content;
   }
   parent.appendChild(el);
   return el;
 }
 
 function add_action_tiles (parent, item, config) {
-  let {items} = item,
+  let {items, background} = item,
       all_pages = items === "pages",
       outer_div = create_element({
         parent: parent,
@@ -36,7 +55,15 @@ function add_action_tiles (parent, item, config) {
       tile.attrs.href = item_config;
       tile.content = config.pages[item_config].title;
     }
-    create_element(tile);
+    tile = create_element(tile);
+    if (background) {
+      create_element({
+        parent: tile,
+        tag_name: "span",
+        class_name: "bg-span",
+        attrs: {style: "background-image:url('" + background + "')"}
+      });
+    }
   });
 }
 
@@ -49,10 +76,38 @@ function add_paragraph (parent, item, config) {
       });
 }
 
+function add_element (parent, item, config) {
+  item.parent = parent;
+  create_element(item);
+}
+
 let add_content = {
   action_tiles: add_action_tiles,
-  paragraph: add_paragraph
+  paragraph: add_paragraph,
+  element: add_element
 };
+
+function add_footer (main, config) {
+  let {
+       company_name,
+       email
+      } = config,
+      footer = create_element({
+        parent: main,
+        class_name: "footer"
+      });
+  create_element({
+    parent: footer,
+    content: "&copy; " + company_name
+  });
+  if (email) {
+    create_element({
+      parent: footer,
+      content_type: "email",
+      content: email
+    });
+  }
+}
 
 function build_page (config) {
   let {
@@ -80,7 +135,7 @@ function build_page (config) {
       brand = create_element({
         parent: title_bar,
         tag_name: "a",
-        attrs: {href: "index.html"},
+        attrs: {href: root},
         class_name: "brand",
         content: company_name
       });
@@ -112,11 +167,7 @@ function build_page (config) {
     create_element(tagline_frame);
   }
   content.forEach((item) => add_content[item.type](main, item, config));
-  let footer = create_element({
-        parent: main,
-        class_name: "footer",
-        content: "&copy; " + company_name
-      });
+  add_footer(main, config);
 }
 
 function build_site (config) {
