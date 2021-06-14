@@ -1,10 +1,13 @@
 build_site({
   company_name: "District Visa",
-  title_bar_style: "light",
-  tagline_style: "light cursive",
-  site_title: "District Visa",
+  theme: "light",
+  tagline_style: "light fofx-cursive",
+  title: "District Visa",
   root: "index.html",
   email: "info@districtvisa.com",
+  phone: "5719215174",
+  icons: "css/line-awesome.min.css",
+  include_contact: true,
   pages: {
     "index.html": {
       title: "Home",
@@ -12,27 +15,23 @@ build_site({
       tagline: "Apostille and Document Authentication Services",
       content: [
         {
-          type: "action_tiles",
-          background: "img/flag.webp",
-          items: "pages"
+          type: "page_tiles",
+          options: {background: "img/flag.webp"}
         }
       ]
-    },
-    "contact.html": {
-      title: "Contact Us",
-      content: [{type: "paragraph", content: "Hello"}]
     },
     "order-form.html": {
       title: "Order Form",
       content: [
-        {type: "element", id: "form"},
+        {tag: "div", id: "form", content: ["Loading..."]},
         {
-          type: "element",
-          tag_name: "script",
+          tag: "script",
           attrs: {src: "https://www.cognitoforms.com/f/seamless.js", "data-key": "2IOyoWKCO0eWqPqDvxZySw", "data-form": "1"}
         },
-        {type: "element", tag_name: "script", content: "window.addEventListener('load',function(){Cognito.mount('1', '#form');});"}
+        {tag: "script", content: ["window.addEventListener('load',function(){Cognito.mount('1', '#form');});"]}
       ]
     }
   }
 });
+
+// <a href="https://icons8.com/icon/63598/envelope">Envelope icon by Icons8</a>

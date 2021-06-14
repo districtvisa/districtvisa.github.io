@@ -1,185 +1,296 @@
-function content_type_email (parent, {content}) {
-  create_element({
-    parent: parent,
-    tag_name: "a",
-    attrs: {href: "mailto:" + content},
-    content: content
+function add_tiles (parent, item, page, site) {
+  let outer_div = create_element(parent, {
+        tag: "div",
+        class_name: "fofx-tiles"
+      }, page, site),
+      bg = item.options.background;
+  item.data.forEach(function (tile) {
+    tile.content = tile.content || [];
+    tile = create_element(outer_div, tile, page, site);
+    if (bg) {
+      create_element(tile, {
+        tag: "span",
+        class_name: "fofx-bg-span",
+        attrs: {style: "background-image:url('" + bg + "')"}
+      }, page, site);
+    }
   });
 }
 
-let content_types = {
-  email: content_type_email
+function add_icon (parent, item, page, site) {
+  item = Object.assign(item, {
+    tag: "i",
+    class_name: item.class_name + " las la-" + item.icon
+  });
+  create_element(parent, item, page, site);
+}
+
+function add_phone (parent, item, page, site) {
+  delete item.type;
+  item.tag = "a";
+  item.attrs = {href: "tel:" + item.data};
+  let phone = "(" + item.data.slice(0, 3)
+              + ") " + item.data.slice(3, 6)
+              + "-" + item.data.slice(6);
+  item.content = [phone];
+  create_element(parent, item, page, site);
+}
+
+function add_email (parent, item, page, site) {
+  create_element(parent, {
+    tag: "a",
+    attrs: {href: "mailto:" + item.data},
+    content: [item.data]
+  }, page, site);
+}
+
+function add_block_list (parent, item, page, site) {
+  create_element(parent, {
+    tag: "table",
+    class_name: "fofx-block-list",
+    content: [
+      {
+        tag: "tbody",
+        content: item.data.map(function (row) {
+          return {
+            tag: "tr",
+            content: row.map(function (cell) {
+              return {
+                tag: "td",
+                content: [{tag: "div", content: [cell]}]
+              };
+            })
+          };
+        })
+      }
+    ]
+  }, page, site);
+}
+
+function add_page_tiles (parent, item, page, site) {
+  let data = [];
+  Object.getOwnPropertyNames(site.pages).forEach(function (path) {
+    let tile = {tag: "a", attrs: {}};
+    if (page.path === path) return;
+    tile.attrs.href = path;
+    tile.content = [site.pages[path].title];
+    data.push(tile);
+  });
+  create_element(parent, {
+    type: "tiles",
+    options: item.options,
+    data: data
+  }, page, site);
+}
+
+let add_content_item = {
+  tiles: add_tiles,
+  page_tiles: add_page_tiles,
+  icon: add_icon,
+  phone: add_phone,
+  email: add_email,
+  block_list: add_block_list
 };
 
-function create_element (config) {
-  let {
-        parent,
-        tag_name,
-        class_name,
-        id,
-        attrs,
-        content,
-        content_type
-      } = config;
-  tag_name = tag_name || "div";
-  let el = document.createElement(tag_name);
-  if (class_name) el.className = class_name;
-  if (id) el.id = id;
-  if (attrs) {
-    Object.getOwnPropertyNames(attrs).forEach(function (prop) {
-      el.setAttribute(prop, attrs[prop]);
-    });
+function create_element (parent, config, page, site) {
+  let el;
+  if (typeof config === "string") {
+    parent.innerHTML += config;
+  } else {
+    if (config.icon) config.type = "icon";
+    if (config.tag) {
+      el = document.createElement(config.tag);
+      if (config.class_name) el.className = config.class_name;
+      if (config.id) el.id = config.id;
+      if (config.attrs) {
+        Object.getOwnPropertyNames(config.attrs).forEach(function (prop) {
+          el.setAttribute(prop, config.attrs[prop]);
+        });
+      }
+      if (config.on) {
+        Object.getOwnPropertyNames(config.on).forEach(function (ev) {
+          el.addEventListener(ev, config.on[ev]);
+        });
+      }
+      parent.appendChild(el);
+      if (config.content) {
+        config.content.forEach(function (cont) {
+          create_element(el, cont, page, site);
+        });
+      }
+    } else {
+      add_content_item[config.type](parent, config, page, site);
+    }
   }
-  if (content_type) {
-    content_types[content_type](el, config);
-  } else if (content) {
-    el.innerHTML = content;
-  }
-  parent.appendChild(el);
   return el;
 }
 
-function add_action_tiles (parent, item, config) {
-  let {items, background} = item,
-      all_pages = items === "pages",
-      outer_div = create_element({
-        parent: parent,
-        class_name: "action-tiles"
-      }),
-      inner_div = create_element({parent: outer_div});
-  if (all_pages) items = Object.getOwnPropertyNames(config.pages);
-  items.forEach(function (item_config) {
-    let tile = {parent: inner_div, tag_name: "a", attrs: {}};
-    if (all_pages) {
-      if (config.path === item_config) return;
-      tile.attrs.href = item_config;
-      tile.content = config.pages[item_config].title;
+function add_footer (main, page, site) {
+  let footer = {
+        tag: "div",
+        class_name: "fofx-footer",
+        content: [{tag: "div", content: ["&copy; ", site.company_name]}]
+      };
+  if (site.email) {
+    footer.content.push({tag: "div", content: [{type: "email", data: site.email}]});
+  }
+  create_element(main, footer, page, site);
+}
+
+function include_icons (page, site) {
+  if (site.icons) {
+    var src = "https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css";
+    if (typeof site.icons === "string") {
+      src = site.icons;
     }
-    tile = create_element(tile);
-    if (background) {
-      create_element({
-        parent: tile,
-        tag_name: "span",
-        class_name: "bg-span",
-        attrs: {style: "background-image:url('" + background + "')"}
-      });
-    }
-  });
-}
-
-function add_paragraph (parent, item, config) {
-  let {content} = item,
-      p = create_element({
-        parent: parent,
-        tag_name: "p",
-        content: content
-      });
-}
-
-function add_element (parent, item, config) {
-  item.parent = parent;
-  create_element(item);
-}
-
-let add_content = {
-  action_tiles: add_action_tiles,
-  paragraph: add_paragraph,
-  element: add_element
-};
-
-function add_footer (main, config) {
-  let {
-       company_name,
-       email
-      } = config,
-      footer = create_element({
-        parent: main,
-        class_name: "footer"
-      });
-  create_element({
-    parent: footer,
-    content: "&copy; " + company_name
-  });
-  if (email) {
-    create_element({
-      parent: footer,
-      content_type: "email",
-      content: email
-    });
+    create_element(document.head, {
+      tag: "link",
+      attrs: {rel: "stylesheet", href: src}
+    }, page, site);
   }
 }
 
-function build_page (config) {
-  let {
-        site_title,
-        title,
-        root,
-        cover_images,
-        company_name,
-        title_bar_style,
-        tagline,
-        tagline_style,
-        content
-      } = config,
-      main = document.getElementById("main");
-  create_element({
-    parent: document.head,
-    tag_name: "title",
-    content: site_title + " | " + title
-  });
-  main.classList.add("container");
-  let title_bar = create_element({
-        parent: main,
-        class_name: "title-bar title-bar-" + title_bar_style
-      }),
-      brand = create_element({
-        parent: title_bar,
-        tag_name: "a",
-        attrs: {href: root},
-        class_name: "brand",
-        content: company_name
+function add_title (page, site) {
+  create_element(document.head, {
+    tag: "title",
+    content: [site.title + " | " + page.title]
+  }, page, site);
+}
+
+function add_title_bar (main, page, site) {
+  let title_bar = create_element(main, {tag: "div", class_name: "fofx-title-bar"}, page, site),
+      brand = create_element(title_bar, {
+        tag: "a",
+        attrs: {href: site.root},
+        class_name: "fofx-brand",
+        content: [site.company_name]
+      }, page, site),
+      middle = create_element(title_bar, {
+        tag: "div",
+        class_name: "fofx-title-bar-middle"
       });
-  if (cover_images) {
-    title_bar.classList.add("title-bar-fixed");
-    let cover_img_div = create_element({
-          parent: main,
-          class_name: "cover-img bg-gray"
-        }),
-        cover_img = create_element({
-          parent: cover_img_div,
-          tag_name: "img",
-          attrs: {src: cover_images[0]}
-        });
-  } else {
-    title_bar.classList.add("title-bar-sticky");
+      menu_btn = create_element(title_bar, {
+        tag: "div",
+        class_name: "fofx-menu-button",
+        content: [
+          {class_name: "fofx-open-menu", icon: "bars"},
+          {class_name: "fofx-close-menu", icon: "times"}
+        ],
+        on: {
+          click: function () {
+            main.classList.toggle("fofx-menu-open");
+          }
+        }
+      });
+}
+
+function add_cover_images (main, body, page, site) {
+  if (page.cover_images) {
+    main.classList.add("fofx-with-cover-img");
+    let cover_img_div = create_element(body, {
+      tag: "div",
+      class_name: "fofx-cover-img"
+    }, page, site);
+    create_element(cover_img_div, {
+      tag: "img",
+      attrs: {src: page.cover_images[0]}
+    }, page, site);
   }
-  if (tagline) {
-    let tagline_div = create_element({
-          parent: main,
-          class_name: "tagline tagline-" + tagline_style
-        }),
+}
+
+function add_tagline (main, page, site) {
+  if (page.tagline) {
+    let tagline_div = create_element(main, {
+          tag: "div",
+          class_name: "fofx-tagline fofx-tagline-" + site.tagline_style
+        }, page, site),
         tagline_frame = {
-          parent: tagline_div,
-          class_name: "tagline-frame"
+          tag: "div",
+          class_name: "fofx-tagline-frame"
         };
-    create_element(tagline_frame);
-    create_element({parent: tagline_div, content: tagline});
-    create_element(tagline_frame);
+    create_element(tagline_div, tagline_frame, page, site);
+    create_element(tagline_div, {
+      tag: "div",
+      content: [page.tagline]
+    }, page, site);
+    create_element(tagline_div, tagline_frame, page, site);
   }
-  content.forEach((item) => add_content[item.type](main, item, config));
-  add_footer(main, config);
 }
 
-function build_site (config) {
+function add_content (main, page, site) {
+  create_element(main, {
+    tag: "div",
+    class_name: "fofx-content",
+    content: page.content
+  }, page, site);
+}
+
+function add_menu (main, page, site) {
+  let page_list = {
+    tag: "div",
+    class_name: "directory-listing",
+    content: []
+  };
+  Object.getOwnPropertyNames(site.pages).forEach(function (path) {
+    page_list.content.push({
+      tag: "a",
+      class_name: "directory-listing-item",
+      attrs: {href: path},
+      content: [site.pages[path].title]
+    });
+  });
+  create_element(main, {
+    tag: "div",
+    class_name: "fofx-site-menu",
+    content: [page_list]
+  }, page, site);
+}
+
+function build_page (page, site) {
+  include_icons(page, site);
+  add_title(page, site);
+  let main = document.getElementById("fofx-main");
+  main.classList.add(site.theme);
+  add_title_bar(main, page, site);
+  let body_and_menu = create_element(main, {
+    tag: "div",
+    class_name: "fofx-body-and-menu"
+  }, page, site);
+  let body = create_element(body_and_menu, {
+    tag: "div",
+    class_name: "fofx-body"
+  }, page, site);
+  add_menu(body_and_menu, page, site);
+  add_cover_images(main, body, page, site);
+  add_tagline(body, page, site);
+  add_content(body, page, site);
+  add_footer(body, page, site);
+}
+
+function add_contact_page (site) {
+  site.pages["contact.html"] = {
+    title: "Contact Us",
+    content: [
+      {
+        type: "block_list",
+        data: [
+          [{icon: "phone", class_name: "fofx-font-1-5"}, {type: "phone", data: site.phone}],
+          [{icon: "envelope", class_name: "fofx-font-1-5"}, {type: "email", data: site.email}]
+        ]
+      }
+    ]
+  };
+}
+
+function build_site (site) {
   let page;
-  Object.getOwnPropertyNames(config.pages).find(function (path) {
+  if (site.include_contact) add_contact_page(site);
+  Object.getOwnPropertyNames(site.pages).find(function (path) {
     if (location.pathname.endsWith(path)) {
-      let this_page = config.pages[path];
-      page = Object.assign(this_page, config);
+      page = site.pages[path];
       page.path = path;
       return true;
     }
   });
-  build_page(page);
+  build_page(page, site);
 }
-
