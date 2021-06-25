@@ -220,7 +220,6 @@ function add_tagline (main, page, site) {
 function add_content (main, page, site) {
   create_element(main, {
     tag: "div",
-    class_name: "fofx-content",
     content: page.content
   }, page, site);
 }
@@ -246,12 +245,7 @@ function add_menu (main, page, site) {
   }, page, site);
 }
 
-function build_page (page, site) {
-  include_icons(page, site);
-  add_title(page, site);
-  let main = document.getElementById("fofx-main");
-  main.classList.add(site.theme);
-  add_title_bar(main, page, site);
+function add_body(main, page, site) {
   let body_and_menu = create_element(main, {
     tag: "div",
     class_name: "fofx-body-and-menu"
@@ -261,7 +255,35 @@ function build_page (page, site) {
     class_name: "fofx-body"
   }, page, site);
   add_menu(body_and_menu, page, site);
+  return body;
+}
+
+function add_page_header (body, page, site) {
+  let page_header = page.title;
+  if (page.path === site.root) {
+    page_header = site.company_name;
+  }
+  create_element(body, {
+    tag: "div",
+    content: [
+      {
+        tag: "h1",
+        class_name: "fofx-page-header",
+        content: [page_header]
+      }
+    ]
+  }, page, site);
+}
+
+function build_page (page, site) {
+  include_icons(page, site);
+  add_title(page, site);
+  let main = document.getElementById("fofx-main");
+  main.classList.add(site.theme);
+  add_title_bar(main, page, site);
+  let body = add_body(main, page, site);
   add_cover_images(main, body, page, site);
+  add_page_header(body, page, site);
   add_tagline(body, page, site);
   add_content(body, page, site);
   add_footer(body, page, site);

@@ -22,16 +22,10 @@ body {
   flex-direction: column;
   height: 100%;
   width: 100%;
-  overflow-y: scroll;
+  overflow-y: auto;
   box-sizing: border-box;
   flex: 1 0 auto;
   transition: flex 0.25s ease-out;
-  padding-top: 2rem;
-}
-
-.fofx-content {
-  display: flex;
-  justify-content: center;
 }
 
 .fofx-tiles {
@@ -43,7 +37,7 @@ body {
 
 .fofx-tiles a {
   position: relative;
-  border: 1px solid #555555;
+  /*border: 1px solid #555555;*/
   width: 200px;
   height: 200px;
   margin: 20px;
@@ -77,9 +71,7 @@ body {
 
 .fofx-footer {
   flex-grow: 1;
-  display: flex;
   align-items: flex-end;
-  justify-content: center;
   padding: 1rem 0;
 }
 
@@ -94,16 +86,11 @@ body {
 
 .fofx-title-bar {
   top: 0;
-  z-index: 1;
   width: 100vw;
   position: sticky;
-  // background-color: #000070;
-  // background-color: #212529;
-  // color: #ffffff;
   color: #555555;
   display: flex;
   border-bottom: 1px solid #55555555;
-  // box-shadow: 0 0.25rem 0.75rem #55555555;
 }
 
 .fofx-title-bar-middle {
@@ -132,9 +119,6 @@ i.fofx-close-menu {
 }
 
 .fofx-with-cover-img .fofx-title-bar {
-  background-color: #ffffffbb;
-  color: #555555;
-  // position: fixed;
   margin-bottom: 0;
 }
 
@@ -161,19 +145,12 @@ i.fofx-close-menu {
   align-items: flex-end;
 }
 
-.fofx-img-block {
-  width: 100%;
-  height 100%;
-  display: block;
-}
-
 .fofx-cover-img > img {
   display: block;
   width: 100%;
 }
 
 .fofx-tagline {
-  padding: 1rem 0;
   font-size: 1.5rem;
   display: flex;
   align-items: center;
@@ -265,3 +242,31 @@ a {
   margin-bottom: 0.5rem;
 }
 
+.fofx-body > div {
+  display: flex;
+  justify-content: center;
+}
+
+.fofx-page-header {
+  font-size: 4rem;
+  padding: 1rem;
+  width: 100vw;
+  text-align: center;
+  margin: 0;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.fofx-page-header::before {
+  z-index: -1;
+  vertical-align: middle;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  content: " ";
+  background-image: url("../img/flag.webp");
+  background-size: cover;
+  opacity: 0.1;
+}
