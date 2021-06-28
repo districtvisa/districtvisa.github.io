@@ -158,30 +158,33 @@ function add_title (page, site) {
 }
 
 function add_title_bar (main, page, site) {
-  let title_bar = create_element(main, {tag: "div", class_name: "fofx-title-bar"}, page, site),
-      brand = create_element(title_bar, {
-        tag: "a",
-        attrs: {href: site.root},
-        class_name: "fofx-brand",
-        content: [site.company_name]
-      }, page, site),
-      middle = create_element(title_bar, {
+  let title_bar = create_element(main, {
         tag: "div",
-        class_name: "fofx-title-bar-middle"
-      });
-      menu_btn = create_element(title_bar, {
-        tag: "div",
-        class_name: "fofx-menu-button",
-        content: [
-          {class_name: "fofx-open-menu", icon: "bars"},
-          {class_name: "fofx-close-menu", icon: "times"}
-        ],
-        on: {
-          click: function () {
-            main.classList.toggle("fofx-menu-open");
-          }
-        }
-      });
+        class_name: "fofx-title-bar"
+      }, page, site);
+  create_element(title_bar, {
+    tag: "a",
+    attrs: {href: site.root},
+    class_name: "fofx-brand",
+    content: [site.company_name]
+  }, page, site);
+  create_element(title_bar, {
+    tag: "div",
+    class_name: "fofx-title-bar-middle"
+  });
+  create_element(title_bar, {
+    tag: "div",
+    class_name: "fofx-menu-button",
+    content: [
+      {class_name: "fofx-open-menu", icon: "bars"},
+      {class_name: "fofx-close-menu", icon: "times"}
+    ],
+    on: {
+      click: function () {
+        main.classList.toggle("fofx-menu-open");
+      }
+    }
+  });
 }
 
 function add_cover_images (main, body, page, site) {
@@ -194,6 +197,13 @@ function add_cover_images (main, body, page, site) {
     create_element(cover_img_div, {
       tag: "img",
       attrs: {src: page.cover_images[0]}
+    }, page, site);
+    create_element(cover_img_div, {
+      tag: "div",
+      content: [
+        {tag: "div", content: [site.company_name]},
+        {tag: "div", content: [page.tagline]}
+      ]
     }, page, site);
   }
 }
@@ -260,9 +270,7 @@ function add_body(main, page, site) {
 
 function add_page_header (body, page, site) {
   let page_header = page.title;
-  if (page.path === site.root) {
-    page_header = site.company_name;
-  }
+  if (page.path === site.root) return;
   create_element(body, {
     tag: "div",
     content: [
@@ -284,7 +292,7 @@ function build_page (page, site) {
   let body = add_body(main, page, site);
   add_cover_images(main, body, page, site);
   add_page_header(body, page, site);
-  add_tagline(body, page, site);
+  // add_tagline(body, page, site);
   add_content(body, page, site);
   add_footer(body, page, site);
 }
