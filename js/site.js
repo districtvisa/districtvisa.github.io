@@ -230,6 +230,7 @@ function add_tagline (main, page, site) {
 function add_content (main, page, site) {
   create_element(main, {
     tag: "div",
+    class_name: "fofx-content",
     content: page.content
   }, page, site);
 }

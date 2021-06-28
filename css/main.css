@@ -151,14 +151,25 @@ i.fofx-close-menu {
   width: 100%;
 }
 
-.fofx-cover-img > div {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  padding: 2rem;
-  color: white;
-  text-shadow: #000 0px 0px 2px;
+@media (min-width: 600px) {
+  .fofx-cover-img > div {
+    padding: 2rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: white;
+    text-shadow: #000 0px 0px 2px;
+  }
+}
+
+@media (max-width: 599px) {
+  .fofx-cover-img {
+    flex-direction: column;
+  }
+  .fofx-cover-img > div {
+    padding: 1rem;
+    text-align: center;
+  }
 }
 
 .fofx-cover-img > div > div {
@@ -293,4 +304,9 @@ a {
   background-image: url("../img/flag.webp");
   background-size: cover;
   opacity: 0.1;
+}
+
+.fofx-content {
+  margin-left: 4rem;
+  margin-right: 4rem;
 }
