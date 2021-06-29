@@ -292,7 +292,8 @@ function add_page_header (body, page, site) {
 function build_page (page, site) {
   include_icons(page, site);
   add_title(page, site);
-  let main = document.getElementById("fofx-main");
+  let main = document.createElement("div");
+  main.className = "fofx-main";
   main.classList.add(site.theme);
   add_title_bar(main, page, site);
   let body = add_body(main, page, site);
@@ -301,6 +302,7 @@ function build_page (page, site) {
   // add_tagline(body, page, site);
   add_content(body, page, site);
   add_footer(body, page, site);
+  document.getElementById("fofx-main").replaceWith(main);
 }
 
 function add_contact_page (site) {

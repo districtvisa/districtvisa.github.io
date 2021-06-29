@@ -4,11 +4,7 @@ body {
   color: #555555;
 }
 
-:root {
-  --bg-img: url("../img/flag.webp");
-}
-
-#fofx-main {
+.fofx-main {
   display: flex;
   flex-direction: column;
   height: 100vh;
