@@ -4,6 +4,10 @@ body {
   color: #555555;
 }
 
+:root {
+  --bg-img: url("../img/flag.webp");
+}
+
 #fofx-main {
   display: flex;
   flex-direction: column;
@@ -62,6 +66,7 @@ body {
   background-size: cover;
   opacity: 0.1;
   border-radius: 0.5em;
+  background-image: var(--bg-img);
 }
 
 .fofx-tiles a:hover {
@@ -88,18 +93,40 @@ body {
   top: 0;
   width: 100vw;
   position: sticky;
-  color: #555555;
+  /* color: #555555;*/
   display: flex;
   border-bottom: 1px solid #55555555;
 }
 
-.fofx-title-bar-middle {
-  flex-grow: 1;
+.fofx-title-bar .fofx-nav-item {
+  margin: 0 1rem 0 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  color: #555555;
+  min-width: 0;
+  overflow: hidden;
+}
+
+@media only screen and (max-width: 999px) {
+  .fofx-title-bar .fofx-nav-item {
+    display: none;
+  }
 }
 
 .fofx-menu-button {
   font-size: 2rem;
   padding: 1rem;
+}
+
+@media only screen and (min-width: 1000px) {
+  .fofx-menu-button {
+    display: none;
+  }
+}
+
+.fofx-title-bar-middle {
+  flex-grow: 1;
 }
 
 i.fofx-close-menu {
@@ -132,7 +159,7 @@ i.fofx-close-menu {
 
 .fofx-brand {
   font-size: 2rem;
-  padding: 1rem;
+  padding: 1rem 2rem;
   display: block;
   color: inherit;
 }
@@ -165,6 +192,9 @@ i.fofx-close-menu {
   .fofx-cover-img > div > div {
     font-size: 3rem;
   }
+  .fofx-cover-img > div > :first-of-type {
+    font-size: 4rem;
+  }
 }
 
 @media only screen and (max-width: 749px) {
@@ -174,14 +204,27 @@ i.fofx-close-menu {
   .fofx-cover-img > div {
     padding: 1rem;
     text-align: center;
+    position: relative;
   }
   .fofx-cover-img > div > div {
     font-size: 1.5rem;
   }
-}
-
-.fofx-cover-img > div > :first-of-type {
-  font-size: 4rem;
+  .fofx-cover-img > div > :first-of-type {
+    font-size: 3rem;
+  }
+  .fofx-cover-img > div::before {
+    z-index: -1;
+    vertical-align: middle;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    content: " ";
+    background-image: var(--bg-img);
+    background-size: cover;
+    opacity: 0.1;
+  }
 }
 
 .fofx-tagline {
@@ -306,7 +349,7 @@ a {
   bottom: 0;
   position: absolute;
   content: " ";
-  background-image: url("../img/flag.webp");
+  background-image: var(--bg-img);
   background-size: cover;
   opacity: 0.1;
 }

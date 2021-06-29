@@ -13,12 +13,7 @@ build_site({
       title: "Home",
       cover_images: ["img/capitol.jpg"],
       tagline: "Apostille and Document Authentication Services",
-      content: [
-        {
-          type: "page_tiles",
-          options: {background: "img/flag.webp"}
-        }
-      ]
+      content: [{type: "page_tiles"}]
     },
     "order-form.html": {
       title: "Order Form",

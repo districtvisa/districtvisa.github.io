@@ -2,18 +2,14 @@ function add_tiles (parent, item, page, site) {
   let outer_div = create_element(parent, {
         tag: "div",
         class_name: "fofx-tiles"
-      }, page, site),
-      bg = item.options.background;
+      }, page, site);
   item.data.forEach(function (tile) {
     tile.content = tile.content || [];
     tile = create_element(outer_div, tile, page, site);
-    if (bg) {
-      create_element(tile, {
-        tag: "span",
-        class_name: "fofx-bg-span",
-        attrs: {style: "background-image:url('" + bg + "')"}
-      }, page, site);
-    }
+    create_element(tile, {
+      tag: "span",
+      class_name: "fofx-bg-span"
+    }, page, site);
   });
 }
 
@@ -168,6 +164,15 @@ function add_title_bar (main, page, site) {
     class_name: "fofx-brand",
     content: [site.company_name]
   }, page, site);
+  Object.getOwnPropertyNames(site.pages).forEach(function (path) {
+    if (path === site.root) return;
+    create_element(title_bar, {
+      tag: "a",
+      class_name: "fofx-nav-item",
+      attrs: {href: path},
+      content: [site.pages[path].title]
+    }, page, site);
+  });
   create_element(title_bar, {
     tag: "div",
     class_name: "fofx-title-bar-middle"
@@ -195,15 +200,15 @@ function add_cover_images (main, body, page, site) {
       class_name: "fofx-cover-img"
     }, page, site);
     create_element(cover_img_div, {
-      tag: "img",
-      attrs: {src: page.cover_images[0]}
-    }, page, site);
-    create_element(cover_img_div, {
       tag: "div",
       content: [
         {tag: "div", content: [site.company_name]},
         {tag: "div", content: [page.tagline]}
       ]
+    }, page, site);
+    create_element(cover_img_div, {
+      tag: "img",
+      attrs: {src: page.cover_images[0]}
     }, page, site);
   }
 }
