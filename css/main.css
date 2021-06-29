@@ -149,7 +149,7 @@ i.fofx-close-menu {
   width: 100%;
 }
 
-@media only screen and (min-width: 480px) {
+@media only screen and (min-width: 750px) {
   .fofx-cover-img {
     align-items: flex-end;
     max-height: 75vh;
@@ -162,9 +162,12 @@ i.fofx-close-menu {
     color: white;
     text-shadow: #000 0px 0px 2px;
   }
+  .fofx-cover-img > div > div {
+    font-size: 3rem;
+  }
 }
 
-@media only screen and (max-width: 479px) {
+@media only screen and (max-width: 749px) {
   .fofx-cover-img {
     flex-direction: column;
   }
@@ -172,10 +175,9 @@ i.fofx-close-menu {
     padding: 1rem;
     text-align: center;
   }
-}
-
-.fofx-cover-img > div > div {
-  font-size: 2rem;
+  .fofx-cover-img > div > div {
+    font-size: 1.5rem;
+  }
 }
 
 .fofx-cover-img > div > :first-of-type {
@@ -215,18 +217,19 @@ i.fofx-close-menu {
   height: 100%;
   border-radius: 0px;
   box-sizing: border-box;
-  display: flex;
-  align-items: center;
 }
 
-.fofx-block-list td > div > * {
-  padding: 1rem;
+.fofx-block-list td > div > a {
   height: 100%;
+  display: flex;
+  align-items: center;
   width: 100%;
+  padding: 0 1rem;
   box-sizing: border-box;
 }
 
 .fofx-block-list td:first-child > div {
+  padding: 1rem;
   border-left: 1px solid #555555;
   border-top-left-radius: 0.5em;
   border-bottom-left-radius: 0.5em;
