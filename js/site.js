@@ -5,11 +5,8 @@ function add_tiles (parent, item, page, site) {
       }, page, site);
   item.data.forEach(function (tile) {
     tile.content = tile.content || [];
+    tile.class_name = "fofx-tile";
     tile = create_element(outer_div, tile, page, site);
-    create_element(tile, {
-      tag: "span",
-      class_name: "fofx-bg-span"
-    }, page, site);
   });
 }
 
@@ -64,18 +61,10 @@ function add_block_list (parent, item, page, site) {
 }
 
 function add_page_tiles (parent, item, page, site) {
-  let data = [];
-  Object.getOwnPropertyNames(site.pages).forEach(function (path) {
-    let tile = {tag: "a", attrs: {}};
-    if (page.path === path) return;
-    tile.attrs.href = path;
-    tile.content = [site.pages[path].title];
-    data.push(tile);
-  });
   create_element(parent, {
     type: "tiles",
     options: item.options,
-    data: data
+    data: site.page_tiles
   }, page, site);
 }
 
@@ -102,6 +91,11 @@ function create_element (parent, config, page, site) {
         Object.getOwnPropertyNames(config.attrs).forEach(function (prop) {
           el.setAttribute(prop, config.attrs[prop]);
         });
+      }
+      if (config.style) {
+        Object.getOwnPropertyNames(config.style).forEach(function (prop) {
+          el.style[prop] = config.style[prop];
+        })
       }
       if (config.on) {
         Object.getOwnPropertyNames(config.on).forEach(function (ev) {
@@ -134,11 +128,9 @@ function add_footer (main, page, site) {
 }
 
 function include_icons (page, site) {
-  if (site.icons) {
-    var src = "https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css";
-    if (typeof site.icons === "string") {
-      src = site.icons;
-    }
+  if (page.include_icons) {
+    let src = "https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css";
+    if (typeof page.icons === "string") src = page.icons;
     create_element(document.head, {
       tag: "link",
       attrs: {rel: "stylesheet", href: src}
@@ -153,43 +145,23 @@ function add_title (page, site) {
   }, page, site);
 }
 
-function add_title_bar (main, page, site) {
-  let title_bar = create_element(main, {
+function nav_bar (main, page, site) {
+  let nav_bar = {
         tag: "div",
-        class_name: "fofx-title-bar"
-      }, page, site);
-  create_element(title_bar, {
-    tag: "a",
-    attrs: {href: site.root},
-    class_name: "fofx-brand",
-    content: [site.company_name]
-  }, page, site);
-  Object.getOwnPropertyNames(site.pages).forEach(function (path) {
-    if (path === site.root) return;
-    create_element(title_bar, {
-      tag: "a",
-      class_name: "fofx-nav-item",
-      attrs: {href: path},
-      content: [site.pages[path].title]
-    }, page, site);
-  });
-  create_element(title_bar, {
-    tag: "div",
-    class_name: "fofx-title-bar-middle"
-  });
-  create_element(title_bar, {
+        class_name: "fofx-nav-bar",
+        content: site.nav_bar_links
+      };
+  nav_bar.content.push({
     tag: "div",
     class_name: "fofx-menu-button",
     content: [
-      {class_name: "fofx-open-menu", icon: "bars"},
-      {class_name: "fofx-close-menu", icon: "times"}
+      {class_name: "fofx-open-menu", icon: "bars"}
     ],
     on: {
-      click: function () {
-        main.classList.toggle("fofx-menu-open");
-      }
+      click: (e) => main.classList.add("fofx-menu-open")
     }
   });
+  return nav_bar;
 }
 
 function add_cover_images (main, body, page, site) {
@@ -244,20 +216,26 @@ function add_menu (main, page, site) {
   let page_list = {
     tag: "div",
     class_name: "directory-listing",
-    content: []
+    content: site.menu_links
   };
-  Object.getOwnPropertyNames(site.pages).forEach(function (path) {
-    page_list.content.push({
-      tag: "a",
-      class_name: "directory-listing-item",
-      attrs: {href: path},
-      content: [site.pages[path].title]
-    });
-  });
+  let close_menu = {
+    tag: "div",
+    class_name: "fofx-menu-button",
+    content: [
+      {class_name: "fofx-close-menu", icon: "times"}
+    ],
+    on: {
+      click: (e) => main.classList.remove("fofx-menu-open")
+    }
+  };
+  let top = {
+    tag: "div",
+    content: [site.brand, close_menu]
+  };
   create_element(main, {
     tag: "div",
     class_name: "fofx-site-menu",
-    content: [page_list]
+    content: [top, page_list]
   }, page, site);
 }
 
@@ -274,61 +252,161 @@ function add_body(main, page, site) {
   return body;
 }
 
-function add_page_header (body, page, site) {
-  let page_header = page.title;
-  if (page.path === site.root) return;
-  create_element(body, {
+function page_header (page, site) {
+  return {
     tag: "div",
     content: [
       {
         tag: "h1",
         class_name: "fofx-page-header",
-        content: [page_header]
+        content: [page.title]
       }
     ]
-  }, page, site);
+  };
+}
+
+function image_carousel (images) {
+  let content = images.map(function ({src, header, subheader}) {
+    return {
+      tag: "div",
+      style: {"background-image": "url(" + src + ")"},
+      content: [
+        {
+          tag: "div",
+          class_name: "fofx-carousel-text",
+          content: [
+            {tag: "div", content: [header]},
+            {tag: "div", content: [subheader]}
+          ]
+        }
+      ]
+    };
+  });
+  return {
+    tag: "div",
+    class_name: "fofx-carousel",
+    content: content
+  };
+}
+
+function top_bottom (page, site) {
+  let content = [{type: "page_tiles"}];
+  return {
+    tag: "div",
+    class_name: "fofx-bottom",
+    content: content
+  };
+}
+
+function add_top (main, page, site) {
+  if (page.cover_images) {
+    main.classList.add("fofx-with-cover-image");
+    create_element(main, {
+      tag: "div",
+      class_name: "fofx-top",
+      content: [
+        nav_bar(main, page, site),
+        image_carousel(page.cover_images),
+        top_bottom(page, site)
+      ]
+    }, page, site);
+  } else {
+    create_element(main, nav_bar(main, page, site), page, site);
+    create_element(main, page_header(page, site), page, site);
+  }
 }
 
 function build_page (page, site) {
   include_icons(page, site);
   add_title(page, site);
   let main = document.createElement("div");
-  main.className = "fofx-main";
-  main.classList.add(site.theme);
+  main.classList.add("fofx-main", site.theme);
+  add_top(main, page, site);
+  add_content(main, page, site);
+  add_footer(main, page, site);
+  add_menu(main, page, site);
+  /*
   add_title_bar(main, page, site);
   let body = add_body(main, page, site);
   add_cover_images(main, body, page, site);
   add_page_header(body, page, site);
-  // add_tagline(body, page, site);
   add_content(body, page, site);
   add_footer(body, page, site);
+  */
   document.getElementById("fofx-main").replaceWith(main);
 }
 
-function add_contact_page (site) {
-  site.pages["contact.html"] = {
-    title: "Contact Us",
-    content: [
-      {
-        type: "block_list",
-        data: [
-          [{icon: "phone", class_name: "fofx-font-1-5"}, {type: "phone", data: site.phone}],
-          [{icon: "envelope", class_name: "fofx-font-1-5"}, {type: "email", data: site.email}]
-        ]
-      }
-    ]
+let templates = {
+  "contact": function (site) {
+    return {
+      title: "Contact Us",
+      content: [
+        {
+          type: "block_list",
+          data: [
+            [{icon: "phone", class_name: "fofx-font-1-5"}, {type: "phone", data: site.phone}],
+            [{icon: "envelope", class_name: "fofx-font-1-5"}, {type: "email", data: site.email}]
+          ]
+        }
+      ],
+      title_bar: true,
+      include_icons: "css/line-awesome.min.css"
+    };
+  }
+};
+
+function prepare_pages (site) {
+  let curr_page;
+  site.show_menu = 0;
+  site.page_tiles = [];
+  site.brand = {
+    tag: "a",
+    attrs: {href: site.root},
+    class_name: "fofx-brand",
+    content: [site.company_name]
   };
+  site.nav_bar_links = [site.brand];
+  site.menu_links = [];
+  Object.getOwnPropertyNames(site.pages).forEach(function (path) {
+    let this_page = site.pages[path],
+        templ = this_page.template;
+    if (templ) {
+      let template = templates[templ](site);
+      this_page = Object.assign(template, this_page);
+      site.pages[path] = this_page;
+    }
+    if (path !== site.root) {
+      site.page_tiles.push({
+        tag: "a",
+        attrs: {href: path},
+        content: [this_page.title]
+      });
+      site.menu_links.push({
+        tag: "a",
+        class_name: "directory-listing-item",
+        attrs: {href: path},
+        content: [this_page.title]
+      });
+    }
+    if (this_page.title_bar) {
+      site.nav_bar_links.push({
+        tag: "a",
+        class_name: "fofx-nav-link",
+        attrs: {href: path},
+        content: [this_page.title]
+      });
+    } else {
+      site.show_menu++;
+    }
+    if (location.pathname.endsWith(path)) {
+      curr_page = this_page;
+      curr_page.path = path;
+    }
+  });
+  return curr_page;
 }
 
 function build_site (site) {
-  let page;
-  if (site.include_contact) add_contact_page(site);
-  Object.getOwnPropertyNames(site.pages).find(function (path) {
-    if (location.pathname.endsWith(path)) {
-      page = site.pages[path];
-      page.path = path;
-      return true;
-    }
-  });
+  let page = prepare_pages(site);
   build_page(page, site);
 }

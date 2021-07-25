@@ -6,14 +6,17 @@ build_site({
   root: "index.html",
   email: "info@districtvisa.com",
   phone: "5719215174",
-  icons: "css/line-awesome.min.css",
-  include_contact: true,
   pages: {
     "index.html": {
       title: "Home",
-      cover_images: ["img/capitol.jpg"],
-      tagline: "Apostille and Document Authentication Services",
-      content: [{type: "page_tiles"}]
+      cover_images: [
+        {
+          src: "img/capitol.jpg",
+          header: "District Visa",
+          subheader: "Apostille and Document Authentication Services"
+        }
+      ],
+      include_icons: "css/line-awesome.min.css"
     },
     "order-form.html": {
       title: "Order Form",
@@ -24,8 +27,10 @@ build_site({
           attrs: {src: "https://www.cognitoforms.com/f/seamless.js", "data-key": "2IOyoWKCO0eWqPqDvxZySw", "data-form": "1"}
         },
         {tag: "script", content: ["window.addEventListener('load',function(){Cognito.mount('1', '#form');});"]}
-      ]
-    }
+      ],
+      title_bar: true
+    },
+    "contact.html": {template: "contact"}
   }
 });
 
