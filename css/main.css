@@ -62,14 +62,6 @@ body {
   border: 1px solid #55555555;
   margin-right: 0.5rem;
   width: 100%;
-  /*
-  margin-bottom: 0.5rem;
-  flex: 1 0 max-content;
-  width: 200px;
-  height: 200px;
-  border-right: 1px solid #55555555;
-  box-sizing: border-box;
-  */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -80,7 +72,7 @@ body {
   color: inherit;
 }
 
-.fofx-tile:before {
+.fofx-tile:before, .fofx-footer-content:before {
   content: " ";
   display: block;
   width: 100%;
@@ -103,18 +95,25 @@ body {
 
 .fofx-footer {
   flex-grow: 1;
-  align-items: flex-end;
-  padding: 1rem 0;
   display: flex;
-  justify-content: center;
+  align-items: flex-end;
+  margin-top: 0.5rem;
 }
 
-.fofx-footer > div {
+.fofx-footer-content {
+  display: flex;
+  position: relative;
+  padding: 1rem 0;
+  justify-content: center;
+  width: 100%;
+}
+
+.fofx-footer-content > div {
   padding: 0 1em;
   border-right: 1px solid #555555;
 }
 
-.fofx-footer > div:last-child {
+.fofx-footer-content > div:last-child {
   border-right: 0;
 }
 
@@ -214,17 +213,21 @@ i.fofx-close-menu {
     flex-wrap: wrap;
     margin-left: 0;
   }
-  .fofx-footer {
+  .fofx-footer-content {
     flex-direction: column;
     align-items: center;
     justify-content: end;
   }
-  .fofx-footer > div {
+  .fofx-footer-content > div {
     border: 0;
   }
   .fofx-tile {
     margin-right: 0;
     margin-bottom: 0.5rem;
+    padding: 1rem;
+  }
+  .fofx-tile:last-child {
+    margin-bottom: 0;
   }
   div.fofx-bottom {
     padding: 0.5rem;
@@ -267,6 +270,8 @@ i.fofx-close-menu {
 .fofx-block-list {
   border-collapse: collapse;
   height: 100%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .fofx-block-list td {
@@ -393,8 +398,13 @@ a {
 }
 
 .fofx-content {
-  margin-left: 4rem;
-  margin-right: 4rem;
+  margin: 1rem 4rem;
+  /*
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  */
+  line-height: 1.5rem;
 }
 
 .fofx-top {
@@ -420,4 +430,12 @@ a {
   background-size: cover;
   background-position: center;
   position: relative;
+}
+
+.fofx-content :first-child {
+  margin-top: 0;
+}
+
+.fofx-content :last-child {
+  margin-bottom: 0;
 }
