@@ -78,6 +78,16 @@ function add_page_tiles (parent, item, page, site) {
   }, page, site);
 }
 
+function add_list (parent, item, page, site) {
+  create_element(parent, {
+    tag: item.type,
+    options: item.options || {},
+    content: item.data.map(function (item) {
+      return {tag: "li", content: item};
+    })
+  })
+}
+
 let add_content_item = {
   tiles: add_tiles,
   page_tiles: add_page_tiles,
@@ -85,6 +95,8 @@ let add_content_item = {
   phone: add_phone,
   email: add_email,
   link: add_link,
+  ul: add_list,
+  ol: add_list,
   block_list: add_block_list
 };
 
@@ -138,7 +150,16 @@ function add_footer (main, page, site) {
         content: [footer_content]
       };
   if (site.email) {
-    footer_content.content.push({tag: "div", content: [{type: "email", data: site.email}]});
+    footer_content.content.push({
+      tag: "div",
+      content: [
+        {
+          type: "link",
+          content: ["Contact"],
+          data: "?page=contact"
+        }
+      ]
+    });
   }
   create_element(main, footer, page, site);
 }
@@ -315,19 +336,12 @@ function top_bottom (page, site) {
 }
 
 function add_top (main, page, site) {
+  create_element(main, nav_bar(main, page, site), page, site);
   if (page.cover_images) {
     main.classList.add("fofx-with-cover-image");
-    create_element(main, {
-      tag: "div",
-      class_name: "fofx-top",
-      content: [
-        nav_bar(main, page, site),
-        image_carousel(page.cover_images),
-        top_bottom(page, site)
-      ]
-    }, page, site);
+    create_element(main, image_carousel(page.cover_images), page, site);
+    create_element(main, top_bottom(page, site), page, site);
   } else {
-    create_element(main, nav_bar(main, page, site), page, site);
     create_element(main, page_header(page, site), page, site);
   }
 }
@@ -388,7 +402,7 @@ function prepare_site (site) {
       if (this_page.tile) {
         site.page_tiles.push({
           tag: "a",
-          attrs: {href: path},
+          attrs: {href: "?page=" + path},
           content: [this_page.title]
         });
       }
@@ -396,7 +410,7 @@ function prepare_site (site) {
         site.menu_links.push({
           tag: "a",
           class_name: "directory-listing-item",
-          attrs: {href: path},
+          attrs: {href: "?page=" + path},
           content: [this_page.title]
         });
       }
