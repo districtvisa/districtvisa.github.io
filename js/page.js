@@ -29,12 +29,12 @@ build_site({
         {
           type: "ol",
           data: [
-            ["Obtain your FBI report or FBI background check."],
+            ["Obtain your FBI report or FBI background check. Contact an FBI Approved Channeler."],
             ["The FBI Channeler will email you your background check results in PDF format."],
             ["Download and save the PDF file."],
             [
-              "Place your FBI apostille order ",
-              {type: "link", data: "?page=order-form", content: ["here"]},
+              "Place your ",
+              {type: "link", data: "?page=order-form", content: ["FBI apostille order here"]},
               "."
             ]
           ]
@@ -47,7 +47,8 @@ build_site({
         {tag: "h2", content: ["Send PDF:"]},
         {tag: "p", content: ["No need to send your original report. Simply upload the PDF file you received from your channeler."]},
         {tag: "h2", content: ["Guarantee:"]},
-        {tag: "p", content: ["Your satisfaction is 100% guaranteed. If we cannot obtain an apostille for your FBI criminal background check, we will refund your money 100%. We apostille hundreds of FBI background checks every week. We will make sure your forms are filled correctly, go to the right government office, and that you get your documents back on time. If you are planning on working, living, adopting, getting married, or obtaining dual citizenship in a foreign country, you will need to provide an Apostille on an FBI Criminal Background Check. We expedite the process by hand-carrying each report to the U.S. Department of State, where we request Apostilles in person. We can obtain the apostille in 5 days from the day we receive your online order."]},
+        {tag: "p", content: ["Your satisfaction is 100% guaranteed. If we cannot obtain an apostille for your FBI criminal background check, we will refund your money 100%."]},
+        {tag: "p", content: ["We apostille hundreds of FBI background checks every week. We will make sure your forms are filled correctly, go to the right government office, and that you get your documents back on time. If you are planning on working, living, adopting, getting married, or obtaining dual citizenship in a foreign country, you will need to provide an Apostille on an FBI Criminal Background Check. We expedite the process by hand-carrying each report to the U.S. Department of State, where we request Apostilles in person. We can obtain the apostille in 5 days from the day we receive your online order."]},
         {tag: "h2", content: ["Shipping fees:"]},
         {
           type: "ul",
