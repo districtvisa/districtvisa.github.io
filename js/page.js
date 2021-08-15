@@ -5,6 +5,7 @@ build_site({
   title: "District Visa",
   email: "info@districtvisa.com",
   phone: "5719215174",
+  breakpoint: 700,
   pages: {
     "home": {
       title: "Home",
@@ -66,8 +67,7 @@ build_site({
             ["If you only received a hard copy of your background report by regular mail (in paper form) you will need to mail this document to our office for processing."]
           ]
         }
-      ],
-      include_icons: "css/line-awesome.min.css"
+      ]
     },
     "order-form": {
       title: "Order Form",

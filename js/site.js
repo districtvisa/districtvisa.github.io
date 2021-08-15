@@ -1,19 +1,21 @@
 function add_tiles (parent, item, page, site) {
   let outer_div = create_element(parent, {
         tag: "div",
-        class_name: "fofx-tiles"
+        classes: ["fofx-tiles"]
       }, page, site);
   item.data.forEach(function (tile) {
     tile.content = tile.content || [];
-    tile.class_name = "fofx-tile";
+    tile.classes = ["fofx-tile"];
     tile = create_element(outer_div, tile, page, site);
   });
 }
 
 function add_icon (parent, item, page, site) {
   item = Object.assign(item, {
-    tag: "i",
-    class_name: item.class_name + " las la-" + item.icon
+    tag: "span",
+    classes: ["fofx-icon", "fofx-icon-" + item.icon]
+    //tag: "object",
+    //attrs: {type: "image/svg+xml", data: "img/" + item.icon + ".svg"}
   });
   create_element(parent, item, page, site);
 }
@@ -48,25 +50,19 @@ function add_link (parent, item, page, site) {
 }
 
 function add_block_list (parent, item, page, site) {
+  item.classes.push("fofx-block-list");
   create_element(parent, {
-    tag: "table",
-    class_name: "fofx-block-list",
-    content: [
-      {
-        tag: "tbody",
-        content: item.data.map(function (row) {
-          return {
-            tag: "tr",
-            content: row.map(function (cell) {
-              return {
-                tag: "td",
-                content: [{tag: "div", content: [cell]}]
-              };
-            })
-          };
-        })
-      }
-    ]
+    tag: "div",
+    classes: item.classes,
+    content: item.data.reduce(function (p, c) {
+      var last_cell;
+      let out = p.concat(c.map(function (cell, i) {
+        last_cell = {tag: "div", content: [cell]};
+        return last_cell;
+      }));
+      last_cell.classes = ["fofx-row-end"];
+      return out;
+    }, [])
   }, page, site);
 }
 
@@ -108,7 +104,7 @@ function create_element (parent, config, page, site) {
     if (config.icon) config.type = "icon";
     if (config.tag) {
       el = document.createElement(config.tag);
-      if (config.class_name) el.className = config.class_name;
+      if (config.classes) el.className = config.classes.join(" ");
       if (config.id) el.id = config.id;
       if (config.attrs) {
         Object.getOwnPropertyNames(config.attrs).forEach(function (prop) {
@@ -141,12 +137,12 @@ function create_element (parent, config, page, site) {
 function add_footer (main, page, site) {
   let footer_content = {
         tag: "div",
-        class_name: "fofx-footer-content",
+        classes: ["fofx-footer-content"],
         content: [{tag: "div", content: ["&copy; ", site.company_name]}]
       },
       footer = {
         tag: "div",
-        class_name: "fofx-footer",
+        classes: ["fofx-footer"],
         content: [footer_content]
       };
   if (site.email) {
@@ -155,7 +151,7 @@ function add_footer (main, page, site) {
       content: [
         {
           type: "link",
-          content: ["Contact"],
+          content: ["Contact Us"],
           data: "?page=contact"
         }
       ]
@@ -185,14 +181,18 @@ function add_title (page, site) {
 function nav_bar (main, page, site) {
   let nav_bar = {
         tag: "div",
-        class_name: "fofx-nav-bar",
+        classes: ["fofx-nav-bar"],
         content: site.nav_bar_links
       };
   nav_bar.content.push({
     tag: "div",
-    class_name: "fofx-menu-button",
+    classes: ["fofx-menu-button"],
     content: [
-      {class_name: "fofx-open-menu", icon: "bars"}
+      {
+        tag: "a",
+        classes: ["fofx-open-menu"],
+        content: [{icon: "menu"}],
+      }
     ],
     on: {
       click: (e) => main.classList.add("fofx-menu-open")
@@ -206,9 +206,13 @@ function add_cover_images (main, body, page, site) {
     main.classList.add("fofx-with-cover-img");
     let cover_img_div = create_element(body, {
       tag: "div",
-      class_name: "fofx-cover-img"
+      classes: ["fofx-cover-img"]
     }, page, site);
-    create_element(cover_img_div, {
+    let cover_img_div_cover = create_element(cover_img_div, {
+      tag: "div",
+      classes: ["cover-img-div-cover"]
+    }, page, site);
+    create_element(cover_img_div_cover, {
       tag: "div",
       content: [
         {tag: "div", content: [site.company_name]},
@@ -226,11 +230,11 @@ function add_tagline (main, page, site) {
   if (page.tagline) {
     let tagline_div = create_element(main, {
           tag: "div",
-          class_name: "fofx-tagline fofx-tagline-" + site.tagline_style
+          classes: ["fofx-tagline", "fofx-tagline-" + site.tagline_style]
         }, page, site),
         tagline_frame = {
           tag: "div",
-          class_name: "fofx-tagline-frame"
+          classes: ["fofx-tagline-frame"]
         };
     create_element(tagline_div, tagline_frame, page, site);
     create_element(tagline_div, {
@@ -244,7 +248,7 @@ function add_tagline (main, page, site) {
 function add_content (main, page, site) {
   create_element(main, {
     tag: "div",
-    class_name: "fofx-content",
+    classes: ["fofx-content"],
     content: page.content
   }, page, site);
 }
@@ -252,14 +256,18 @@ function add_content (main, page, site) {
 function add_menu (main, page, site) {
   let page_list = {
     tag: "div",
-    class_name: "directory-listing",
+    classes: ["directory-listing"],
     content: site.menu_links
   };
   let close_menu = {
     tag: "div",
-    class_name: "fofx-menu-button",
+    classes: ["fofx-menu-button"],
     content: [
-      {class_name: "fofx-close-menu", icon: "times"}
+      {
+        tag: "a",
+        classes: ["fofx-close-menu"],
+        content: [{icon: "close"}]
+      }
     ],
     on: {
       click: (e) => main.classList.remove("fofx-menu-open")
@@ -271,7 +279,7 @@ function add_menu (main, page, site) {
   };
   create_element(main, {
     tag: "div",
-    class_name: "fofx-site-menu",
+    classes: ["fofx-site-menu"],
     content: [top, page_list]
   }, page, site);
 }
@@ -279,11 +287,11 @@ function add_menu (main, page, site) {
 function add_body(main, page, site) {
   let body_and_menu = create_element(main, {
     tag: "div",
-    class_name: "fofx-body-and-menu"
+    classes: ["fofx-body-and-menu"]
   }, page, site);
   let body = create_element(body_and_menu, {
     tag: "div",
-    class_name: "fofx-body"
+    classes: ["fofx-body"]
   }, page, site);
   add_menu(body_and_menu, page, site);
   return body;
@@ -295,7 +303,7 @@ function page_header (page, site) {
     content: [
       {
         tag: "h1",
-        class_name: "fofx-page-header",
+        classes: ["fofx-page-header"],
         content: [page.title]
       }
     ]
@@ -310,10 +318,16 @@ function image_carousel (images) {
       content: [
         {
           tag: "div",
-          class_name: "fofx-carousel-text",
+          classes: ["fofx-carousel-background"],
           content: [
-            {tag: "div", content: [header]},
-            {tag: "div", content: [subheader]}
+            {
+              tag: "div",
+              classes: ["fofx-carousel-text"],
+              content: [
+                {tag: "div", content: [header]},
+                {tag: "div", content: [subheader]}
+              ]
+            }
           ]
         }
       ]
@@ -321,7 +335,7 @@ function image_carousel (images) {
   });
   return {
     tag: "div",
-    class_name: "fofx-carousel",
+    classes: ["fofx-carousel"],
     content: content
   };
 }
@@ -330,7 +344,7 @@ function top_bottom (page, site) {
   let content = [{type: "page_tiles"}];
   return {
     tag: "div",
-    class_name: "fofx-bottom",
+    classes: ["fofx-bottom"],
     content: content
   };
 }
@@ -365,15 +379,15 @@ let templates = {
       content: [
         {
           type: "block_list",
+          classes: ["fofx-block-list-2"],
           data: [
-            [{icon: "phone", class_name: "fofx-font-1-5"}, {type: "phone", data: site.phone}],
-            [{icon: "envelope", class_name: "fofx-font-1-5"}, {type: "email", data: site.email}]
+            [{icon: "phone"}, {type: "phone", data: site.phone}],
+            [{icon: "mail"}, {type: "email", data: site.email}]
           ]
         }
       ],
       title_bar: true,
-      tile: true,
-      include_icons: "css/line-awesome.min.css"
+      tile: true
     };
   }
 };
@@ -385,7 +399,7 @@ function prepare_site (site) {
   site.brand = {
     tag: "a",
     attrs: {href: "?page=home"},
-    class_name: "fofx-brand",
+    classes: ["fofx-brand"],
     content: [site.company_name]
   };
   site.nav_bar_links = [site.brand];
@@ -409,7 +423,7 @@ function prepare_site (site) {
       if (this_page.title_bar) {
         site.menu_links.push({
           tag: "a",
-          class_name: "directory-listing-item",
+          classes: ["directory-listing-item"],
           attrs: {href: "?page=" + path},
           content: [this_page.title]
         });
@@ -418,7 +432,7 @@ function prepare_site (site) {
     if (this_page.title_bar) {
       site.nav_bar_links.push({
         tag: "a",
-        class_name: "fofx-nav-link",
+        classes: ["fofx-nav-link"],
         attrs: {href: "?page=" + path},
         content: [this_page.title]
       });
@@ -438,4 +452,14 @@ function build_site (site) {
   } else {
     location.href = "?page=home";
   }
+  const mediaQuery = window.matchMedia(`(max-width: ${site.breakpoint}px)`);
+  function toggle_screen (e) {
+    if (e.matches) {
+      document.body.classList.add("fofx-breakpoint");
+    } else {
+      document.body.classList.remove("fofx-breakpoint");
+    }
+  }
+  toggle_screen(mediaQuery);
+  mediaQuery.addEventListener("change", toggle_screen);
 }
