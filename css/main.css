@@ -205,6 +205,10 @@ i.fofx-close-menu {
   color: inherit;
 }
 
+.fofx-brand img {
+  height: var(--brand-img-height);
+}
+
 .fofx-cover-img {
   flex-shrink: 0;
   width: 100%;

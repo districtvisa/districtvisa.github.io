@@ -400,7 +400,7 @@ function prepare_site (site) {
     tag: "a",
     attrs: {href: "?page=home"},
     classes: ["fofx-brand"],
-    content: [site.company_name]
+    content: [site.logo || site.company_name]
   };
   site.nav_bar_links = [site.brand];
   site.menu_links = [];

@@ -5,6 +5,7 @@ build_site({
   title: "District Visa",
   email: "info@districtvisa.com",
   phone: "5719215174",
+  logo: {tag: "img", attrs: {src: "img/logo.png"}},
   breakpoint: 700,
   pages: {
     "home": {
@@ -95,5 +96,3 @@ build_site({
     "contact": {template: "contact", tile: false}
   }
 });
-
-// <a href="https://icons8.com/icon/63598/envelope">Envelope icon by Icons8</a>
