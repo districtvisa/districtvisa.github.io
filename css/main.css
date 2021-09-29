@@ -393,18 +393,20 @@ a {
 }
 
 .fofx-site-menu {
-  position: fixed;
+  position: absolute;
   top: 0;
+  bottom: 0;
   left: 100vw;
-  height: 100vh;
   width: 100vw;
+  /*
+  height: 100vh;
   box-sizing: border-box;
-  transition: flex 0.25s;
+  /*transition: flex 0.25s;*/
   transition: left 0.25s;
-  border-left: 1px solid #55555555;
-  white-space: nowrap;
-  background: white;
+  /*border-left: 1px solid #55555555;
+  white-space: nowrap;*/
   z-index: 2;
+  background: white;
 }
 
 .fofx-site-menu > :nth-child(1) {
@@ -422,8 +424,13 @@ a {
   left: 0;
 }
 
-.fofx-menu-open .fofx-body {
-  flex-shrink: 1;
+.fofx-menu-open {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow-y: hidden;
 }
 
 .fofx-center {
@@ -543,4 +550,55 @@ a {
 
 .fofx-icon-phone::before {
   content: '\e830';
+}
+
+.fofx-alert {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: #555555aa;
+  z-index: 1;
+  justify-content: center;
+}
+
+.fofx-alert > div {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: calc(var(--breakpoint) - 4rem);
+  box-sizing: border-box;
+  background-color: white;
+  padding: 2rem;
+  flex: 0 1 0;
+  border-radius: 0.5rem;
+}
+
+.fofx-breakpoint .fofx-alert > div {
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+
+.fofx-alert > div > :first-child {
+  margin-top: 0;
+}
+
+.fofx-alert > div > :last-child {
+  margin-bottom: 0;
+}
+
+button {
+  padding: 0.5rem;
+  font-family: sans-serif;
+  color: #555555;
+  font-size: 1rem;
+  background: transparent;
+  border: 1px solid #555555;
+  border-radius: 0.25rem;
+}
+
+button:hover {
+  cursor: pointer;
 }

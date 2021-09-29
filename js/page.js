@@ -10,6 +10,19 @@ build_site({
   pages: {
     "home": {
       title: "Home",
+      alerts: [{
+        content: [
+          {tag: "h2", content: ["COVID ALERT"]},
+          {
+            tag: "p",
+            content: [
+              "The US Department of State has yet to resume expediting services. ",
+              "It's currently taking them 3 weeks on average to apostille documents. ",
+              "Please email support@districtvisa.com if you have any questions."
+            ]
+          }
+        ]
+      }],
       cover_images: [
         {
           src: "img/capitol.jpg",

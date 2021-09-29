@@ -284,6 +284,7 @@ function add_menu (main, page, site) {
   }, page, site);
 }
 
+/*
 function add_body(main, page, site) {
   let body_and_menu = create_element(main, {
     tag: "div",
@@ -296,6 +297,7 @@ function add_body(main, page, site) {
   add_menu(body_and_menu, page, site);
   return body;
 }
+*/
 
 function page_header (page, site) {
   return {
@@ -360,6 +362,29 @@ function add_top (main, page, site) {
   }
 }
 
+function add_alerts (main, page, site) {
+  page.alerts = page.alerts || [];
+  page.alerts.forEach(function (alert) {
+    let alert_div = create_element(
+      main, {tag: "div", classes: ["fofx-alert"]}
+    );
+    alert.content.push({
+      tag: "button",
+      content: ["Close"],
+      on: {click: () => alert_div.style.display = "none"}
+    });
+    let alert_content = create_element(
+      alert_div, {tag: "div", content: alert.content}
+    );
+    alert_div.addEventListener("click", function () {
+      alert_div.style.display = "none";
+    });
+    alert_content.addEventListener("click", function (e) {
+      e.stopPropagation();
+    });
+  });
+}
+
 function build_page (page, site) {
   include_icons(page, site);
   add_title(page, site);
@@ -369,7 +394,9 @@ function build_page (page, site) {
   add_content(main, page, site);
   add_footer(main, page, site);
   add_menu(main, page, site);
+  add_alerts(main, page, site);
   document.getElementById("fofx-main").replaceWith(main);
+  return main;
 }
 
 let templates = {
@@ -447,12 +474,14 @@ function build_site (site) {
   let params = new URLSearchParams(location.search);
   let path = params.get("page");
   let page = site.pages[path];
+  var main;
   if (page) {
-    build_page(page, site);
+    main = build_page(page, site);
   } else {
     location.href = "?page=home";
   }
-  const mediaQuery = window.matchMedia(`(max-width: ${site.breakpoint}px)`);
+  document.body.style.setProperty("--breakpoint", site.breakpoint + "px");
+  const media_query = window.matchMedia(`(max-width: ${site.breakpoint}px)`);
   function toggle_screen (e) {
     if (e.matches) {
       document.body.classList.add("fofx-breakpoint");
@@ -460,6 +489,6 @@ function build_site (site) {
       document.body.classList.remove("fofx-breakpoint");
     }
   }
-  toggle_screen(mediaQuery);
-  mediaQuery.addEventListener("change", toggle_screen);
+  toggle_screen(media_query);
+  media_query.addEventListener("change", toggle_screen);
 }
