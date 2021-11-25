@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="../dyn.js"></script>
+    <script>
+      fofx_live.event("break-point")
+               .media_query("(max-width: 768px)")
+               .listen(function () {
+                 fofx_live.dispatch("menu-open", null);
+               });
+      fofx_live.event("split-lines").listen(function (el) {
+        const lines = el.innerHTML.trim().split("\n");
+        el.innerHTML = "";
+        for (line of lines) {
+          const cnt = document.createElement("line-content");
+          cnt.innerHTML = line;
+          const lne = document.createElement("each-line");
+          lne.appendChild(cnt);
+          el.appendChild(lne);
+        }
+      });
+      fofx_live.event("show-alert")
+               .listen(function (el) {
+                 setTimeout(() => fofx_live.toggle("alert-showing"));
+               });
+      fofx_live.event("preload-alert")
+               .listen(function (el) {
+                 fofx_live.toggle("alert-preloaded");
+               });
+      fofx_live.event("close-alert")
+               .listen(function (el) {
+                 fofx_live.toggle("alert-showing");
+               });
+      fofx_live.event("unload-alert")
+               .listen(function (el) {
+                 if (!fofx_live.data("alert-showing")) {
+                   fofx_live.toggle("alert-preloaded");
+                 }
+               });
+      fofx_live.event("toggle-menu")
+               .listen(function (el) {
+                 fofx_live.toggle("menu-open");
+               });
+    </script>
+    <link rel="stylesheet" href="public/main.css">
+    <link rel="stylesheet" href="public/style.css">
+  </head>
+  <body>
+    <fofx-load-templates src="components.html" main="main-body">
+      <main-content>
+        <alert-modal>
+          <alert-content>
+            <h2>COVID Alert</h2>
+            The US Department of State has yet to resume expediting services. It's currently taking them 3 weeks on average to apostille documents. Please email support@districtvisa.com if you have any questions.
+          </alert-content>
+        </alert-modal>
+        <image-carousel>
+          <carousel-image var-background-image="url(capitol.jpg)">
+            <image-header>District Visa</image-header>
+            <image-subtext>Your one stop for Apostille Services, Document Authentication, and much more</image-subtext>
+          </carousel-image>
+        </image-carousel>
+        <body-content>
+          <content-section>
+            <content-p>
+              <b>District Visa</b> provides prompt and reliable document legalization, authentication and certification services.
+              We will have one of our specially trained document legalization agents hand-carry your legal documents to the DC Notary & Authentication office (if required), the State Department Authentication office and then to the appropriate Embassy.
+              District Visa specializes in making the documentation process easier and faster. Along with saving you time District Visa will provide peace of mind by staying in contact with you to let you know the status of any item you have in process with us and will notify you of any issues or delays.
+            </content-p>
+          </content-section>
+          <content-section>
+            <content-h>Four easy steps to order an apostille with District Visa for your FBI report</content-h>
+            <content-ol>
+              Obtain your FBI report or FBI background check. Contact an FBI Approved Channeler.
+              The FBI Channeler will email you your background check results in PDF format.
+              Download and save the PDF file.
+              Place your <a href="order.html">FBI apostille order here</a>.
+            </content-ol>
+          </content-section>
+          <content-section>
+            <content-h>First thing every morning</content-h>
+            <content-p>
+              We process FBI apostilles. We hand-deliver and submit your FBI background check directly to the US Department of State.
+            </content-p>
+          </content-section>
+          <content-section>
+            <content-h>Turnover</content-h>
+            <content-p>
+              Your background check will be apostilled in 5 business days* from the date of submission.
+              *COVID-19 Update: The turnaround time is 3-4 weeks.
+            </content-p>
+          </content-section>
+          <content-section>
+            <content-h>Send PDF</content-h>
+            <content-p>
+              No need to send your original report. Simply upload the PDF file you received from your channeler.
+            </content-p>
+          </content-section>
+          <content-section>
+            <content-h>Guarantee</content-h>
+            <content-p>
+              Your satisfaction is 100% guaranteed. If we cannot obtain an apostille for your FBI criminal background check, we will refund your money 100%.
+              We apostille hundreds of FBI background checks every week. We will make sure your forms are filled correctly, go to the right government office, and that you get your documents back on time. If you are planning on working, living, adopting, getting married, or obtaining dual citizenship in a foreign country, you will need to provide an Apostille on an FBI Criminal Background Check. We expedite the process by hand-carrying each report to the U.S. Department of State, where we request Apostilles in person. We can obtain the apostille in 5 days from the day we receive your online order.
+            </content-p>
+          </content-section>
+          <content-section>
+            <content-h>Shipping fees</content-h>
+            <content-ul>
+              USPS Domestic regular shipping is FREE.
+              Overnight shipping (FedEx) is $30.
+              International shipping is available for a flat fee of $45.
+            </content-ul>
+          </content-section>
+          <content-section>
+            <content-h>Special considerations</content-h>
+            <content-ul>
+              If your FBI is password protected, please type the password in the special notes section when you place the order.
+              If you only received a hard copy of your background report by regular mail (in paper form) you will need to mail this document to our office for processing.
+            </content-ul>
+          </content-section>
+        </body-content>
+      </main-content>
+    </fofx-load-templates>
+  </body>
+</html>
