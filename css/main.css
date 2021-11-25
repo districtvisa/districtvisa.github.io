@@ -1,8 +1,8 @@
 @font-face {
   font-family: "LinearIcons";
-  src: url('linear-icons.woff2') format('woff2'),
-       url('linear-icons.woff') format('woff'),
-       url('linear-icons.ttf') format('truetype');
+  src: url('../fonts/linear-icons.woff2') format('woff2'),
+       url('../fonts/linear-icons.woff') format('woff'),
+       url('../fonts/linear-icons.ttf') format('truetype');
 }
 
 body {
