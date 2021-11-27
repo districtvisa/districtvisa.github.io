@@ -5,7 +5,7 @@
   <body>
     <fofx-template fofx-name="navbar-template">
       <div id="navbar" class="top-bar">
-        <a class="brand" href="home">
+        <a class="brand" href="index.html">
           <fofx-slot fofx-name="company-logo"><img></fofx-slot>
         </a>
         <fofx-slot fofx-name="list-pages">
@@ -94,7 +94,7 @@
     <fofx-template fofx-name="site-menu">
       <div class="site-menu">
         <div>
-          <a class="brand" href="home.html">
+          <a class="brand" href="index.html">
             <fofx-slot fofx-name="company-logo"><img></fofx-slot>
           </a>
           <fofx-component fofx-class="toggle-menu">
@@ -130,7 +130,7 @@
           </fofx-component>
         </div>
         <div id="banner">
-          <a href="home.html">
+          <a href="index.html">
             <fofx-slot fofx-name="company-logo"><img></fofx-slot>
           </a>
         </div>
@@ -171,6 +171,9 @@
         <company-logo src="img/logo.png"></company-logo>
         <fofx-data fofx-name="company-number">5719215174</fofx-data>
         <fofx-data fofx-name="support-email">support@districtvisa.com</fofx-data>
+        <list-pages href="index.html">
+          <page-name>Home</page-name>
+        </list-pages>
         <list-pages href="order.html">
           <page-name>Order Form</page-name>
         </list-pages>
@@ -180,10 +183,12 @@
         <list-pages href="visas.html">
           <page-name>Visas</page-name>
         </list-pages>
+        <!--
         <list-pages href="contact.html">
           <page-name>Contact Us</page-name>
         </list-pages>
-        <footer-link href="contact.html">Contact Us</footer-link>
+        -->
+        <footer-link href="mailto:support@districtvisa.com">Contact Us</footer-link>
       </main-body-inner>
     </fofx-template>
   </body>
