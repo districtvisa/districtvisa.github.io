@@ -4,7 +4,7 @@
   </head>
   <body>
     <fofx-template fofx-name="navbar-template">
-      <div id="navbar">
+      <div id="navbar" class="top-bar">
         <a class="brand" href="home">
           <fofx-slot fofx-name="company-logo"><img></fofx-slot>
         </a>
@@ -13,7 +13,7 @@
             <fofx-slot fofx-name="page-name"></fofx-slot>
           </a>
         </fofx-slot>
-        <fofx-component on-click="toggle-menu">
+        <fofx-component fofx-class="toggle-menu">
           <div class="menu-button">
             <a class="open-menu">
               <span class="icon icon-menu"></span>
@@ -29,16 +29,27 @@
 
     <fofx-template fofx-name="image-carousel">
       <div class="carousel">
-        <fofx-slot fofx-name="carousel-image">
-          <div class="carousel-image">
-            <div class="carousel-background">
-              <div class="carousel-text">
-                <fofx-slot fofx-name="image-header"><div></div></fofx-slot>
-                <fofx-slot fofx-name="image-subtext"><div></div></fofx-slot>
+        <div class="go-left"><span class="icon icon-lt"></span></div>
+        <div class="go-right"><span class="icon icon-gt"></span></div>
+        <div class="carousel-progress">
+          <fofx-slot fofx-name="carousel-image" fofx-clear>
+            <div class="progress-marker"></div>
+          </fofx-slot>
+        </div>
+        <fofx-component fofx-name="carousel-inner">
+          <div class="carousel-inner">
+            <fofx-slot fofx-name="carousel-image">
+              <div class="carousel-image">
+                <div class="carousel-background">
+                  <div class="carousel-text">
+                    <fofx-slot fofx-name="image-header"><h2></h2></fofx-slot>
+                    <fofx-slot fofx-name="image-subtext"><div></div></fofx-slot>
+                  </div>
+                </div>
               </div>
-            </div>
+            </fofx-slot>
           </div>
-        </fofx-slot>
+        </fofx-component>
       </div>
     </fofx-template>
 
@@ -56,19 +67,19 @@
         <fofx-slot fofx-name="content-section">
           <div class="content-section">
             <fofx-slot fofx-name="content-h"><h2></h2></fofx-slot>
-            <fofx-slot fofx-name="content-p" on-init="split-lines">
+            <fofx-slot fofx-name="content-p" fofx-class="split-lines">
               <fofx-slot fofx-name="each-line">
                 <p><fofx-slot fofx-name="line-content"></fofx-slot></p>
               </fofx-slot>
             </fofx-slot>
-            <fofx-slot fofx-name="content-ol" on-init="split-lines">
+            <fofx-slot fofx-name="content-ol" fofx-class="split-lines">
               <ol>
                 <fofx-slot fofx-name="each-line">
                   <li><fofx-slot fofx-name="line-content"></fofx-slot></li>
                 </fofx-slot>
               </ol>
             </fofx-slot>
-            <fofx-slot fofx-name="content-ul" on-init="split-lines">
+            <fofx-slot fofx-name="content-ul" fofx-class="split-lines">
               <ul>
                 <fofx-slot fofx-name="each-line">
                   <li><fofx-slot fofx-name="line-content"></fofx-slot></li>
@@ -86,7 +97,7 @@
           <a class="brand" href="home.html">
             <fofx-slot fofx-name="company-logo"><img></fofx-slot>
           </a>
-          <fofx-component on-click="toggle-menu">
+          <fofx-component fofx-class="toggle-menu">
             <div class="menu-button">
               <a class="close-menu">
                 <span class="icon icon-close"></span>
@@ -95,7 +106,7 @@
           </fofx-component>
         </div>
         <div class="directory-listing">
-          <fofx-slot fofx-name="list-pages" href="href">
+          <fofx-slot fofx-name="list-pages" href="{{href}}">
             <a class="directory-listing-item">
               <fofx-slot fofx-name="page-name"></fofx-slot>
             </a>
@@ -106,6 +117,23 @@
 
     <fofx-template fofx-name="main-body-inner" class="break-point menu-open alert-showing alert-preloaded">
       <div id="main">
+        <div id="top-contact" class="top-bar">
+          <fofx-component href="tel:{{company-number}}">
+            <a>
+              <fofx-text fofx-name="company-number"></fofx-text>
+            </a>
+            <fofx-component href="mailto:{{support-email}}">
+              <a>
+                <fofx-text fofx-name="support-email"></fofx-text>
+              </a>
+            </fofx-component>
+          </fofx-component>
+        </div>
+        <div id="banner">
+          <a href="home.html">
+            <fofx-slot fofx-name="company-logo"><img></fofx-slot>
+          </a>
+        </div>
         <navbar-sticky></navbar-sticky>
         <fofx-slot fofx-name="main-content"></fofx-slot>
         <standard-footer></standard-footer>
@@ -113,17 +141,17 @@
       </div>
     </fofx-template>
 
-    <fofx-template fofx-name="alert-modal" on-init="preload-alert" on-load="show-alert" on-transitionend="unload-alert">
+    <fofx-template fofx-name="alert-modal">
       <div class="alert">
         <div class="alert-container">
-          <fofx-component on-click="close-alert">
+          <fofx-component fofx-class="close-modal">
             <div class="alert-background"></div>
           </fofx-component>
           <div class="alert-content">
             <fofx-slot fofx-name="alert-content">
               <div></div>
             </fofx-slot>
-            <fofx-component on-click="close-alert">
+            <fofx-component fofx-class="close-modal">
               <a class="close-alert" href="javascript:void(0)">Close</a>
             </fofx-component>
           </div>
@@ -131,9 +159,18 @@
       </div>
     </fofx-template>
 
+    <fofx-template fofx-name="content-block">
+      <div class="content-block">
+        <fofx-slot fofx-name="block-content"></fofx-slot>
+      </div>
+    </fofx-template>
+
     <fofx-template fofx-name="main-body">
       <main-body-inner>
         <company-name>District Visa</company-name>
+        <company-logo src="img/logo.png"></company-logo>
+        <fofx-data fofx-name="company-number">5719215174</fofx-data>
+        <fofx-data fofx-name="support-email">support@districtvisa.com</fofx-data>
         <list-pages href="order.html">
           <page-name>Order Form</page-name>
         </list-pages>
@@ -146,7 +183,6 @@
         <list-pages href="contact.html">
           <page-name>Contact Us</page-name>
         </list-pages>
-        <company-logo src="img/logo.png"></company-logo>
         <footer-link href="contact.html">Contact Us</footer-link>
       </main-body-inner>
     </fofx-template>

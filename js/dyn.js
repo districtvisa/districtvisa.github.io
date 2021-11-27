@@ -26,27 +26,6 @@ function on_load (cb) {
   }
 }
 
-class FOFX_Event {
-  constructor (ev_name, host) {
-    this.ev_name = ev_name;
-    this.host = host;
-  }
-  listen (hdl) {
-    this.host.on(this.ev_name, hdl);
-    return this;
-  }
-  media_query (qry) {
-    const media_query = window.matchMedia(qry);
-    const host = this.host, ev_name = this.ev_name;
-    function callback (e) {
-      host.dispatch(ev_name, e.matches ? ev_name : null);
-    }
-    on_load(() => callback(media_query));
-    media_query.addEventListener("change", callback);
-    return this;
-  }
-}
-
 class FOFX_Cmp_Spec extends HTMLElement {
   constructor () {
     super();
@@ -82,13 +61,10 @@ class FOFX_Cmp_Spec extends HTMLElement {
       }, this);
     }
   }
-  event (ev_name) {
-    return new FOFX_Event(ev_name, this);
-  }
   on (ev_name, hdl) {
     if (arguments.length === 1) {
       for (const nm in ev_name) this.on(nm, ev_name[nm]);
-    } else {
+    } else if (typeof ev_name === "string") {
       if (!this.events[ev_name]) this.events[ev_name] = [];
       this.events[ev_name].push(hdl);
       if (this !== fofx_live) {
@@ -97,6 +73,8 @@ class FOFX_Cmp_Spec extends HTMLElement {
           that.dispatch(ev_name, data);
         });
       }
+    } else {
+
     }
   }
   toggle (ev_name) {
@@ -116,6 +94,51 @@ class FOFX_Cmp_Impl extends HTMLElement {
 customElements.define("fofx-live", class extends FOFX_Cmp_Spec { });
 const fofx_live = window.fofx_live = curr_template = document.createElement("fofx-live");
 fofx_live.impls = [{el: fofx_live, data: curr_data}];
+
+fofx_live.media_query = function (qry, hdl) {
+  const media_query = window.matchMedia(`(${qry})`);
+  function cb (m) { hdl(m.matches); }
+  on_load(() => cb(media_query));
+  media_query.addEventListener("change", cb);
+  return this;
+}
+
+const component_registry = {};
+
+function add_event_listener (ev_name, hdl, tmpl) {
+  tmpl.on("load", function (el, data) {
+    el.addEventListener(ev_name, function () {
+      hdl(el, data);
+    });
+  });
+}
+
+class FOFX_Cmp_Proxy {
+  constructor (cmp_name) {
+    this.name = cmp_name;
+  }
+  on (ev_name, hdl) {
+    const prev = component_registry[this.name];
+    let new_hdl;
+    switch (ev_name) {
+      case "click":
+      case "transitionend":
+        new_hdl = tmpl => add_event_listener(ev_name, hdl, tmpl);
+      break;
+      default:
+        new_hdl = tmpl => tmpl.on(ev_name, hdl);
+    }
+    component_registry[this.name] = prev ? function (tmpl) {
+      new_hdl(tmpl);
+      prev(tmpl);
+    } : new_hdl;
+    return this;
+  }
+}
+
+fofx_live.component = function (name) {
+  return new FOFX_Cmp_Proxy(name);
+};
 
 function add_class_listener (attr, tmpl) {
   const classes = attr.nodeValue.split(" ");
@@ -138,32 +161,17 @@ function add_class_listener (attr, tmpl) {
   }
 }
 
-function add_event_listener (attr, tmpl) {
-  const base_ev = attr.nodeName.slice(3);
-  const fofx_ev = attr.nodeValue;
-  tmpl.on("load", function (el, data) {
-    el.addEventListener(base_ev, function () {
-      dispatch(fofx_live, el, fofx_ev, data);
-    });
-  });
-}
-
-function add_fofx_event_listener (attr, tmpl) {
-  const base_ev = attr.nodeName.slice(3);
-  const fofx_ev = attr.nodeValue;
-  tmpl.on(base_ev, function (el, data) {
-    dispatch(fofx_live, el, fofx_ev, data);
-  });
-}
-
 function add_attribute_listener (attr, tmpl) {
   const attr_name = attr.nodeName;
-  const ev_name = attr.nodeValue;
+  const attr_val = attr.nodeValue;
+  const pattern = attr_val.match(/\{\{.+\}\}/)[0];
+  const ev_name = pattern.slice(2,-2);
+  const set_val = val => attr_val.replace(pattern, val);
   tmpl.on(ev_name, function (el, data) {
-    el.setAttribute(attr_name, data);
+    el.setAttribute(attr_name, set_val(data));
   });
   tmpl.on("load", function (el, data) {
-    el.setAttribute(attr_name, data[attr_name]);
+    el.setAttribute(attr_name, set_val(data[ev_name]));
   });
 }
 
@@ -172,14 +180,8 @@ function add_attr_listeners (tmpl) {
     const nm = attr.nodeName;
     switch (nm) {
       case "class": add_class_listener(attr, tmpl); break;
-      case "on-click":
-      case "on-transitionend":
-        add_event_listener(attr, tmpl);
-      break;
       default:
-        if (nm.startsWith("on-")) {
-          add_fofx_event_listener(attr, tmpl);
-        } else if (!nm.startsWith("fofx-")) {
+        if (!nm.startsWith("fofx-")) {
           add_attribute_listener(attr, tmpl);
         }
     }
@@ -188,6 +190,13 @@ function add_attr_listeners (tmpl) {
 
 function init_spec (tmpl) {
   add_attr_listeners(tmpl);
+  let classes = tmpl.getAttribute("fofx-class");
+  classes = classes ? classes.split(" ") : [];
+  classes.push(tmpl.getAttribute("fofx-name"));
+  for (const name of classes) {
+    const reg = component_registry[name];
+    if (reg) reg(tmpl);
+  }
 }
 
 function init_impl (tmpl, impl) {
@@ -256,6 +265,8 @@ function copy_attrs (src, tgt) {
     if (name.startsWith("var-")) {
       const var_name = "-" + name.slice(3);
       tgt.style.setProperty(var_name, val);
+    } else if (name === "class") {
+      tgt.classList.add(val);
     } else {
       tgt.setAttribute(name, val);
     }
@@ -279,14 +290,17 @@ customElements.define("fofx-template", class extends FOFX_Cmp_Spec {
 
 function copy_slot (impl, _slot) {
   let slot = _slot.cloneNode(true);
+  const is_clear = _slot.hasAttribute("fofx-clear");
   if (slot.children.length) {
     slot = slot.children[0];
     register_el(_slot, slot);
-    copy_attrs(impl, slot);
+    if (!is_clear) {
+      copy_attrs(impl, slot);
+    }
   } else {
     slot = new DocumentFragment();
   }
-  if (!slot.children.length) {
+  if (!slot.children.length && !is_clear) {
     for (const child of impl.childNodes) {
       slot.appendChild(child.cloneNode(true));
     }
@@ -304,6 +318,7 @@ function def_slot (slot, name) {
       if (!this.done) {
         this.done = true;
         const slots = this.parentNode.slots;
+        if (!slots) return;
         if (!slots.hasOwnProperty(name)) slots[name] = [];
         slots[name].push(this);
       }
@@ -329,7 +344,7 @@ customElements.define("fofx-slot", class extends FOFX_Cmp_Spec {
       for (const impl of impls) {
         curr_data = Object.assign(Object.create(curr_data), impl.data);
         init_impl(curr_template, impl);
-        const copied = copy_slot(impl, curr_template)
+        const copied = copy_slot(impl, curr_template);
         this.parentNode.insertBefore(copied, sibling);
         curr_impl = prev_impl;
         curr_data = _prev_data;
@@ -354,8 +369,12 @@ customElements.define("fofx-text", class extends FOFX_Cmp_Spec {
       this.parentNode.replaceChild(last_node, this);
       register_el(this, this);
       this.data = Object.create(curr_data);
+      const that = this;
+      const fofx_id = this.getAttribute("fofx-id");
+      const tmpl = curr_template.querySelector(`[fofx-id="${fofx_id}"]`);
       function hdl (el, data) {
         const text_node = document.createTextNode(data);
+        dispatch(tmpl, text_node, "init", curr_data);
         last_node.parentNode.replaceChild(text_node, last_node);
         last_node = text_node;
       }
@@ -363,6 +382,7 @@ customElements.define("fofx-text", class extends FOFX_Cmp_Spec {
       hdl(this, this.data[ev_name]);
       this.on(ev_name, hdl);
     } else {
+      this.setAttribute("fofx-id", id_counter++);
       init_spec(this);
     }
   }
@@ -400,11 +420,16 @@ customElements.define("fofx-component", class extends FOFX_Cmp_Spec {
       const fofx_id = this.getAttribute("fofx-id");
       curr_template = curr_template.querySelector(`[fofx-id="${fofx_id}"]`);
       const doc = new DocumentFragment;
-      for (const child of this.children) {
-        register_el(curr_template, child);
+      const children = [];
+      for (let child of this.children) {
+        child = child.cloneNode(true);
+        children.push(child);
         doc.appendChild(child);
       }
       this.parentNode.replaceChild(doc, this);
+      for (const child of children) {
+        register_el(curr_template, child);
+      }
       curr_template = prev_tmpl;
     } else {
       this.setAttribute("fofx-id", id_counter++);
